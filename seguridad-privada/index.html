@@ -5,6 +5,44 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>SEGURIDAD PRIVADA</title>
 <style>
+body {
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    margin: 0;
+    padding: 16px;
+    background: #f8fafc;
+  }
+
+  .top-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+  }
+
+  .back-btn {
+    text-decoration: none;
+    font-weight: 600;
+    color: #0f172a;
+    background: #e2e8f0;
+    padding: 8px 12px;
+    border-radius: 10px;
+  }
+
+  .back-btn:hover {
+    background: #cbd5f5;
+  }
+
+  .logo-umh {
+    height: 48px;
+    max-width: 60%;
+    object-fit: contain;
+  }
+
+  @media (max-width: 480px) {
+    .logo-umh {
+      height: 40px;
+    }
+  }
 :root{
   --bg:#ffffff;
   --card:#ffffff;
@@ -362,6 +400,10 @@ button#startBtn:hover{
 </style>
 </head>
 <body>
+<header class="top-bar">
+  <a href="../" class="back-btn">⬅ Volver al menú</a>
+  <img src="../assets/umh.png" alt="Universitas Miguel Hernández" class="logo-umh">
+</header>
 <div id="startOverlay">
   <div class="start-box">
     <div class="start-warning">⚠️ ATENCIÓN:SEGURIDAD PRIVADA 100% PREGUNTAS</div>
