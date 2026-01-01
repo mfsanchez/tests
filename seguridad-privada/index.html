@@ -1,0 +1,1794 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>SEGURIDAD PRIVADA</title>
+<style>
+:root{
+  --bg:#ffffff;
+  --card:#ffffff;
+  --border:#e5e7eb;
+  --text:#111827;
+  --muted:#6b7280;
+  --ok:#16a34a;
+  --bad:#dc2626;
+  --accent:#2563eb;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Arial,sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  padding:16px;
+}
+.wrap{
+  max-width:900px;
+  margin:0 auto;
+}
+h1{
+  font-size:22px;
+  margin-bottom:4px;
+}
+.meta{
+  font-size:13px;
+  color:var(--muted);
+  margin-bottom:16px;
+}
+.card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:16px;
+  padding:16px;
+  box-shadow:0 8px 20px rgba(15,23,42,.08);
+  position:relative;
+  overflow:hidden;
+}
+.stats{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  font-size:13px;
+  margin-bottom:12px;
+}
+.stat{
+  padding:6px 10px;
+  border-radius:999px;
+  border:1px solid rgba(148,163,184,.7);
+  display:flex;
+  align-items:center;
+  gap:6px;
+  background:#f9fafb;
+}
+.stat span.label{color:var(--muted);font-weight:500}
+.stat span.value{font-variant-numeric:tabular-nums}
+.stat.ok{border-color:rgba(34,197,94,.6);background:#ecfdf3;}
+.stat.bad{border-color:rgba(239,68,68,.6);background:#fef2f2;}
+.stat.pen{border-color:rgba(250,204,21,.7);background:#fffbeb;}
+#questionBox{margin-top:4px;}
+#qNumber{
+  font-size:14px;
+  color:var(--accent);
+  font-weight:600;
+  margin-bottom:6px;
+}
+#qText{
+  font-size:18px;
+  font-weight:700;
+  margin-bottom:12px;
+}
+.options{
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+}
+.btn-option{
+  text-align:left;
+  border-radius:999px;
+  border:1px solid rgba(148,163,184,.7);
+  padding:9px 12px;
+  font-size:14px;
+  background:#f9fafb;
+  cursor:pointer;
+  display:flex;
+  gap:8px;
+  align-items:center;
+  transition:transform .12s ease, box-shadow .12s ease, border-color .12s ease, background .12s ease;
+}
+.btn-option span.key{
+  font-weight:700;
+  font-size:12px;
+  padding:2px 7px;
+  border-radius:999px;
+  background:#eef2ff;
+  border:1px solid rgba(129,140,248,.8);
+  color:#111827;
+}
+.btn-option span.label{flex:1}
+.btn-option:hover{
+  transform:translateY(-1px);
+  box-shadow:0 8px 18px rgba(15,23,42,.08);
+  border-color:var(--accent);
+  background:#eff6ff;
+}
+.btn-option.correct{
+  border-color:var(--ok);
+  background:#ecfdf3;
+}
+.btn-option.wrong{
+  border-color:var(--bad);
+  background:#fef2f2;
+}
+.btn-option.disabled{
+  opacity:.9;
+  cursor:default;
+}
+.footer{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-top:12px;
+  gap:8px;
+  flex-wrap:nowrap;
+}
+.nav-buttons{
+  display:flex;
+  gap:8px;
+}
+button.nav{
+  border-radius:999px;
+  border:1px solid rgba(148,163,184,.9);
+  background:#ffffff;
+  color:#111827;
+  padding:7px 14px;
+  font-size:13px;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  gap:6px;
+  transition:transform .12s ease, box-shadow .12s ease, border-color .12s ease, background .12s ease;
+}
+button.nav:hover{
+  transform:translateY(-1px);
+  box-shadow:0 8px 18px rgba(15,23,42,.12);
+  border-color:var(--accent);
+  background:#eff6ff;
+}
+button.nav:disabled{
+  opacity:.4;
+  cursor:default;
+  box-shadow:none;
+  transform:none;
+}
+#feedback{
+  font-size:13px;
+  min-height:18px;
+  flex:1;
+}
+#feedback.ok{color:var(--ok);}
+#feedback.bad{color:var(--bad);}
+#feedback.neutral{color:var(--muted);}
+
+/* Animaciones base */
+.flash-correct{
+  animation:flashGreen .45s ease-out;
+}
+.flash-wrong{
+  animation:flashRed .45s ease-out;
+}
+.shake{
+  animation:shake .3s ease-in-out;
+}
+@keyframes flashGreen{
+  0%{box-shadow:0 0 0 0 rgba(22,163,74,.0);}
+  40%{box-shadow:0 0 0 12px rgba(22,163,74,.18);}
+  100%{box-shadow:0 0 0 0 rgba(22,163,74,.0);}
+}
+@keyframes flashRed{
+  0%{box-shadow:0 0 0 0 rgba(220,38,38,.0);}
+  40%{box-shadow:0 0 0 12px rgba(220,38,38,.18);}
+  100%{box-shadow:0 0 0 0 rgba(220,38,38,.0);}
+}
+@keyframes shake{
+  0%,100%{transform:translateX(0);}
+  20%{transform:translateX(-4px);}
+  40%{transform:translateX(4px);}
+  60%{transform:translateX(-3px);}
+  80%{transform:translateX(3px);}
+}
+
+/* Animación divertida al fallar: viñeta tipo cómic */
+.explosion{
+  position:absolute;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%) scale(.2);
+  pointer-events:none;
+  animation:boomPop .75s ease-out forwards;
+}
+.explosion-core{
+  width:180px;
+  height:180px;
+  border-radius:50%;
+  background:
+    radial-gradient(circle at 30% 30%,#fef9c3 0,#fde047 30%,transparent 75%),
+    radial-gradient(circle at 70% 40%,#fee2e2 0,#fecaca 35%,transparent 80%),
+    radial-gradient(circle at 50% 65%,#b91c1c 0,#7f1d1d 45%,transparent 80%);
+  border:4px solid #111827;
+  box-shadow:0 0 25px rgba(248,113,113,.8);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  position:relative;
+}
+.explosion-core::before{
+  /* picos tipo cómic */
+  content:"";
+  position:absolute;
+  inset:-18px;
+  background:#f97316;
+  clip-path:polygon(50% 0%,63% 13%,83% 9%,79% 27%,94% 35%,80% 47%,90% 63%,71% 65%,74% 83%,57% 76%,50% 95%,43% 76%,26% 83%,29% 65%,10% 63%,20% 47%,6% 35%,21% 27%,17% 9%,37% 13%);
+  z-index:-1;
+}
+.explosion-label{
+  font-size:26px;
+  font-weight:900;
+  color:#111827;
+  text-shadow:2px 2px 0 #facc15, -2px -2px 0 #facc15;
+}
+
+/* trocitos que saltan */
+.explosion-piece{
+  position:absolute;
+  width:10px;
+  height:22px;
+  border-radius:3px;
+  background:#ef4444;
+  box-shadow:0 0 6px rgba(127,29,29,.8);
+  transform-origin:center bottom;
+  animation:pieceFly .75s ease-out forwards;
+}
+
+@keyframes boomPop{
+  0%{
+    transform:translate(-50%,-50%) scale(.2) rotate(-8deg);
+    opacity:0;
+  }
+  40%{
+    transform:translate(-50%,-50%) scale(1.05) rotate(3deg);
+    opacity:1;
+  }
+  70%{
+    transform:translate(-50%,-50%) scale(0.95) rotate(-2deg);
+    opacity:.95;
+  }
+  100%{
+    transform:translate(-50%,-50%) scale(0.8) rotate(0deg);
+    opacity:0;
+  }
+}
+
+@keyframes pieceFly{
+  0%{
+    transform:translate(0,0) scale(1);
+    opacity:1;
+  }
+  100%{
+    transform:translate(var(--dx),var(--dy)) scale(.3);
+    opacity:0;
+  }
+}
+
+/* Confeti / gorros al acertar */
+.confetti-container{
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  overflow:hidden;
+}
+.confetti-emoji{
+  position:absolute;
+  top:-12%;
+  font-size:20px;
+  animation:fallConfetti 2.2s ease-out forwards;
+}
+@keyframes fallConfetti{
+  0%{
+    transform:translateY(0) rotate(0deg);
+    opacity:1;
+  }
+  100%{
+    transform:translateY(260%) rotate(360deg);
+    opacity:0;
+  }
+}
+
+/* Overlay inicio */
+#startOverlay{
+  position:fixed;
+  inset:0;
+  background:rgba(15,23,42,.35);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  z-index:20;
+}
+.start-box{
+  max-width:420px;
+  background:#ffffff;
+  border-radius:18px;
+  padding:20px;
+  border:1px solid rgba(148,163,184,.8);
+  box-shadow:0 18px 40px rgba(15,23,42,.25);
+}
+.start-text{
+  font-size:14px;
+  color:#6b7280;
+  margin-bottom:14px;
+}
+.start-warning{
+  font-size:14px;
+  color:#b45309;
+  font-weight:600;
+  margin-bottom:8px;
+}
+button#startBtn{
+  width:100%;
+  border-radius:999px;
+  border:none;
+  padding:9px 14px;
+  font-size:14px;
+  font-weight:600;
+  cursor:pointer;
+  background:linear-gradient(135deg,#38bdf8,#22c55e);
+  color:#020617;
+  box-shadow:0 12px 25px rgba(8,47,73,.35);
+  transition:transform .12s ease, box-shadow .12s ease;
+}
+button#startBtn:hover{
+  transform:translateY(-1px);
+  box-shadow:0 18px 35px rgba(8,47,73,.5);
+}
+
+/* Resultado final */
+#finalBox{
+  margin-top:12px;
+  padding-top:10px;
+  border-top:1px dashed rgba(148,163,184,.8);
+  font-size:13px;
+  color:#6b7280;
+}
+#finalBox strong{color:var(--accent);}
+</style>
+</head>
+<body>
+<div id="startOverlay">
+  <div class="start-box">
+    <div class="start-warning">⚠️ ATENCIÓN:SEGURIDAD PRIVADA 100% PREGUNTAS</div>
+    <div class="start-text">
+      Úsalo para practicar, pero contrasta siempre con temario, normativa y criterio del profesorado.
+    </div>
+    <button id="startBtn">Empezar el test</button>
+  </div>
+</div>
+
+<div class="wrap">
+  <h1>SEGURIDAD PRIVADA</h1>
+  <div class="meta">
+    Test interactivo · Aciertos/Fallos · Penalización: cada 3 fallos se resta 1 acierto · Preguntas barajadas.
+  </div>
+
+  <div class="card" id="card">
+    <div class="stats">
+      <div class="stat ok"><span class="label">Aciertos</span><span class="value" id="statCorrect">0</span></div>
+      <div class="stat bad"><span class="label">Fallos</span><span class="value" id="statWrong">0</span></div>
+      <div class="stat pen"><span class="label">Penalizaciones</span><span class="value" id="statPenalty">0</span></div>
+      <div class="stat"><span class="label">Pregunta</span><span class="value" id="statIndex">1 / 50</span></div>
+    </div>
+
+    <div id="questionBox">
+      <div id="qNumber">Pregunta 1</div>
+      <div id="qText"></div>
+      <div class="options" id="optionsBox"></div>
+    </div>
+
+    <div class="footer">
+      <div id="feedback" class="neutral"></div>
+      <div class="nav-buttons">
+        <button class="nav" id="prevBtn" disabled>⟵ Anterior</button>
+        <button class="nav" id="nextBtn">Siguiente ⟶</button>
+        <button class="nav" id="retryWrongBtn">Repetir errores</button>
+        <button class="nav" id="shuffleBtn">Barajar preguntas</button>
+      </div>
+    </div>
+
+    <div id="finalBox"></div>
+  </div>
+</div>
+
+<script>
+// Banco de 92 preguntas (texto sin "correcta")
+// lock:true = NO barajar opciones porque la correcta hace referencia a letras (a y c, A y B, B y C, etc.)
+const RAW = [
+  // --- BLOQUE 1: CUESTIONARIO GENERAL ---
+  {
+    q: "1. ¿En qué artículo de la Constitución viene atribuido la competencia de seguridad al Estado?",
+    options: ["ARTÍCULO 149.1.16", "ARTÍCULO 148.3", "ARTÍCULO 149.1.29", "ARTÍCULO 149.1.28"],
+    correct: 2
+  },
+  {
+    q: "2. Definición de Seguridad Privada:",
+    options: ["SEGURIDAD AL MARGEN DE LA SEGURIDAD INSTITUCIONAL OFICIAL QUE TIENE COMO PRINCIPAL OBJETIVO LA AUTOPROTECCIÓN", "INSTITUCIÓN QUE COMPARTE CON EL ESTADO LA COMPETENCIA DE SEGURIDAD", "LAS DOS SON CORRECTAS", "LAS DOS SON INCORRECTAS"],
+    correct: 0,
+    lock: true
+  },
+  {
+    q: "3. La seguridad privada es completamente independiente:",
+    options: ["SI", "NO, YA QUE ESTÁ BAJO SUPERVISIÓN ESTATAL EN TODOS LOS ESTADOS DEMOCRÁTICOS, YA QUE TIENE LA COMPETENCIA SOBRE LA SEGURIDAD PÚBLICA, ESTANDO LA SEGURIDAD PRIVADA SUBORDINADA", "SI, YA QUE EN SU ÁMBITO DE COMPETENCIA Y AL SER INSTITUCIONES COMPLETAMENTE INDEPENDIENTES, NO DEBEN RENDIR CUENTAS ENTRE SÍ", "NINGUNA ES CORRECTA"],
+    correct: 1,
+    lock: true
+  },
+  {
+    q: "4. La subordinación de la seguridad privada está en consonancia en la Constitución en los artículos:",
+    options: ["ART 104 Y 149.1.25", "ART 103 Y 149.1.27", "ART 104 Y 149.1.29", "ART 103 Y 149.1.28"],
+    correct: 2
+  },
+  {
+    q: "5. Que expone en artículo 104 de la Constitución:",
+    options: ["LAS FFCCS TENDRÁN COMO MISIÓN PROTEGER EL LIBRE EJERCICIO DE LOS DERECHOS Y LIBERTADES Y GARANTIZAR LA SEGURIDAD CIUDADANA. UNA LEY ORGÁNICA DETERMINARÁ LAS FUNCIONES, PRINCIPIOS BÁSICOS DE ACTUACIÓN Y ESTATUTOS DE LAS FFCCS.", "LAS FFCCS, BAJO LA DEPENDENCIA DEL GOBIERGO , TENDRÁN COMO MISIÓN PROTEGER EL LIBRE EJERCICIO DE LOS DERECHOS Y LIBERTADES Y GARANTIZAR LA SEGURIDAD CIUDADANA. UNA LEY ORDINARIA DETERMINARÁ LAS FUNCIONES, PRINCIPIOS BÁSICOS DE ACTUACIÓN Y ESTATUTOS DE LAS FFCCS.", "LAS FFCCS, BAJO LA DEPENDENCIA DEL GOBIERNO , TENDRÁN COMO MISIÓN PROTEGER EL LIBRE EJERCICIO DE LOS DERECHOS Y LIBERTADES Y GARANTIZAR LA SEGURIDAD CIUDADANA. UNA LEY ORGÁNICA DETERMINARÁ LAS FUNCIONES, PRINCIPIOS BÁSICOS DE ACTUACIÓN Y ESTATUTOS DE LAS FFCCS.", "LAS FFCCS, CON INDEPENDENCIA DEL GOBIERNO , TENDRÁN COMO MISIÓN PROTEGER EL LIBRE EJERCICIO DE LOS DERECHOS Y LIBERTADES Y GARANTIZAR LA SEGURIDAD CIUDADANA. UNA LEY ORGÁNICA DETERMINARÁ LAS FUNCIONES, PRINCIPIOS BÁSICOS DE ACTUACIÓN Y ESTATUTOS DE LAS FFCCS."],
+    correct: 2
+  },
+  {
+    q: "6. Que expone el artículo 149.1.29:",
+    options: ["SEGURIDAD PÚBLICA , SIN PERJUICIO DE LA POSIBILIDAD DE CREACIÓN DE POLICÍAS POR LAS CCAA EN LA FORMA QUE SE ESTABLEZCA EN LOS RESPECTIVOS ESTATUTOS EN EL MARCO DE LO QUE DISPONGA UNA LEY ORGÁNICA.", "SEGURIDAD PRIVADA, SIN PERJUICIO DE LA POSIBILIDAD DE CREACIÓN DE POLICÍAS POR LAS CCAA EN LA FORMA QUE SE ESTABLEZCA EN LOS RESPECTIVOS ESTATUTOS EN EL MARCO DE LO QUE DISPONGA UNA LEY ORGÁNICA.", "SEGURIDAD PÚBLICA , SIN PERJUICIO DE LA POSIBILIDAD DE CREACIÓN DE POLICÍAS POR LAS CCAA EN LA FORMA QUE SE ESTABLEZCA EN LOS RESPECTIVOS ESTATUTOS EN EL MARCO DE LO QUE DISPONGA UNA LEY ORDINARIA.", "NINGUNA ES CORRECTA"],
+    correct: 0,
+    lock: true
+  },
+  {
+    q: "7. ¿Cuales son los objetivos de la seguridad privada?",
+    options: ["CREACIÓN DE UN NUEVO SECTOR DE NEGOCIO BASADO EN LA SEGURIDAD PARA PODER EXPLOTAR UN MODELO EN AUGE POR LA PROBLEMÁTICA LATENTE EN LA SOCIEDAD MODERNA SIENDO TOTALMENTE INDEPENDIENTE AL ESTADO.", "DAR RESPUESTA A LA AUTOPROTECCIÓN EXISTENTES, INCREMENTAR LOS NIVELES DE PREVENCIÓN , CREACIÓN DE UNA NUEVA ACTIVIDAD Y GENERAR EMPLEO.", "LAS DOS SON CORRECTAS", "LAS DOS SON INCORRECTAS"],
+    correct: 1,
+    lock: true
+  },
+  {
+    q: "8. ¿ En qué año se promulga la primera normativa de seguridad privada ?",
+    options: ["1978", "1992", "1985", "1974"],
+    correct: 3
+  },
+  {
+    q: "9. ¿ En qué año se reguló la seguridad privada con una normativa de suficiente entidad?",
+    options: ["1992", "1988", "1995", "1990"],
+    correct: 0
+  },
+  {
+    q: "10. ¿ Cual es la actual ley de seguridad privada?",
+    options: ["LEY 5/2015 DEL 4 DE ABRIL, QUE DEROGA A LA LEY DE 1992", "LEY 4/2015 DEL 4 DE ABRIL, QUE DEROGA A LA LEY DE 1992", "LEY 5/2014 DEL 4 DE ABRIL, QUE DEROGA A LA LEY DE 1992", "LEY 4/2014 DEL 4 DE ABRIL, QUE DEROGA A LA LEY DE 1992"],
+    correct: 2
+  },
+  {
+    q: "11. Antes de la promulgación de la ley de 1992 de seguridad privada, mediante que se regulaba este sector:",
+    options: ["R.D. 880/81 DEL 8 DE MAYO", "RD. 629/78 DE 10 DE MARZO", "NINGUNA ES CORRECTA", "AMBAS SON CORRECTAS"],
+    correct: 3,
+    lock: true
+  },
+  {
+    q: "12. Estructura de la ley 5/2014 de 4 de abril:",
+    options: ["TÍTULO PRELIMINAR, 6 TÍTULOS , 3 DISPOSICIONES ADICIONALES, 5 DISPOSICIONES TRANSITORIAS, 1 DISPOSICIÓN DEROGATORIA, 4 DISPOSICIONES FINALES.", "PREÁMBULO , 6 TÍTULOS , 3 DISPOSICIONES ADICIONALES, 5 DISPOSICIONES TRANSITORIAS, 1 DISPOSICIÓN DEROGATORIA, 4 DISPOSICIONES FINALES.", "PREÁMBULO , TÍTULO PRELIMINAR, 6 TÍTULOS , 3 DISPOSICIONES ADICIONALES, 5 DISPOSICIONES TRANSITORIAS, 1 DISPOSICIÓN DEROGATORIA, 4 DISPOSICIONES FINALES.", "PREÁMBULO , TÍTULO PRELIMINAR, 6 TÍTULOS , 3 DISPOSICIONES ADICIONALES, 5 DISPOSICIONES TRANSITORIAS, 1 DISPOSICIÓN DEROGATORIA."],
+    correct: 2
+  },
+  {
+    q: "13. ¿Cuales son las cuestiones destacadas del preámbulo de la ley 5/2014?",
+    options: ["REGULACIÓN DE LOS SISTEMAS DE ALARMA Y GUARDIA", "ADECUACIÓN A LA NORMATIVA ( LEY ÓMNIBUS ) Y AL MODELO EUROPEO", "NECESIDAD DE CONTROL DE NUEVAS FIGURAS ASOCIADAS AL COLECTIVO (LEGALIDAD DE LAS MISMAS)", "TODAS SON CORRECTAS"],
+    correct: 3,
+    lock: true
+  },
+  {
+    q: "14. Definición de seguridad privada según preámbulo de la ley 5/2014:",
+    options: ["CONJUNTO DE ACTIVIDADES Y SERVICIOS QUE LOS USUARIOS PUEDEN ADOPTAR, DE FORMA OBLIGATORIA O VOLUNTARIA, PARA HACER FRENTE A ACTOS DELIBERADOS (DELICTIVOS) O RIESGOS ACCIDENTALES, CON LA FINALIDAD DE GARANTIZAR LA SEGURIDAD DE LAS PERSONAS, PROTEGER SU PATRIMONIO Y VELAR POR EL NORMAL DESARROLLO DE SUS ACTIVIDADES.", "CONJUNTO DE ACTIVIDADES Y SERVICIOS AL MARGEN DEL ESTADO Y DE LAS FFCCS, QUE LOS USUARIOS PUEDEN ADOPTAR, DE FORMA OBLIGATORIA O VOLUNTARIA, PARA HACER FRENTE A ACTOS DELIBERADOS (DELICTIVOS) O RIESGOS ACCIDENTALES, CON LA FINALIDAD DE GARANTIZAR LA SEGURIDAD DE LAS PERSONAS, PROTEGER SU PATRIMONIO Y VELAR POR EL NORMAL DESARROLLO DE SUS ACTIVIDADES.", "ACTIVIDAD EMPRESARIAL DEDICADA A LA PROTECCIÓN PERSONAL DE DIFERENTES SECTORES DE LA POBLACIÓN MEDIANTE PAGO DE UN SERVICIO, NO SUBORDINADA AL ESTADO Y POR TANTO A LAS FFCCS, QUE TIENE COMO FINALIDAD GARANTIZAR LA SEGURIDAD DE LAS PERSONAS, PROTEGER SU PATRIMONIO Y VELAR POR EL NORMAL DESARROLLO DE SUS ACTIVIDADES.", "NINGUNA ES CORRECTA"],
+    correct: 0,
+    lock: true
+  },
+  {
+    q: "15. ¿ Qué dice el preámbulo de las actividades compatibles?",
+    options: ["NO PUEDEN PARTICIPAR LOS MIEMBROS DE SEGURIDAD PRIVADA", "COMPETENCIA EXCLUSIVA DE LAS FFCCS", "ESTAS ACTIVIDADES PUEDEN SER DESEMPEÑADAS POR LAS EMPRESAS DE SEGURIDAD JUNTO CON LAS PROPIAS DE SEGURIDAD QUE TENGAN AUTORIZADAS.", "COMPETENCIA EXCLUSIVA DEL ESTADO A TRAVÉS DE LAS FFCCS, PARA EL DESARROLLO DE LAS ACTIVIDADES COMPLEMENTARIAS TAL Y COMO LO EXPONE LA LEY."],
+    correct: 2
+  },
+  {
+    q: "16. Novedades a destacar en la ley 5/2014:",
+    options: ["ELIMINACIÓN DE LA AUTORIZACIÓN ADMINISTRATIVA, SIENDO SUSTITUIDA ESTA POR UNA DECLARACIÓN RESPONSABLE PARA CENTROS DE FORMACIÓN , EMPRESAS TIPO SECURITAS DIRECT, DESPACHOS DE DETECTIVES.", "CAMBIO DE DENOMINACIÓN DE GUARDA PARTICULAR DE CAMPO POR GUARDA RURAL, LA ELIMINACIÓN DE LA NECESIDAD DE RENOVAR EL TÍTULO DE VIGILANTE DE SEGURIDAD TRAS DOS AÑOS DE INACTIVIDAD, ASÍ COMO LA PROMESA DE LA REGULACIÓN DE LA VIDEOVIGILANCIA Y SERVICIOS DE INVESTIGACIÓN PRIVADA.", "ESTABLECIMIENTO DE MEDIDAS PROVISIONALES POR LAS UNIDADES TERRITORIALES DE SEGURIDAD PRIVADA COMO TAMBIÉN IMPONER SANCIONES A CENTROS DE FORMACIÓN .", "TODAS SON CORRECTAS"],
+    correct: 3,
+    lock: true
+  },
+  {
+    q: "17. ¿Cual es el reglamento de seguridad privada y que estructura tiene?",
+    options: ["R.D. 2364/1994 DE 9 DE DICIEMBRE. 5 TÍTULOS , 2 DISPOSICIONES ADICIONALES, DISPOSICIÓN DEROGATORIA ÚNICA , 2 DISPOSICIONES FINALES Y ANEXO.", "R.D. 2364/1994 DE 9 DE DICIEMBRE. 5 TÍTULOS , 2 DISPOSICIONES ADICIONALES, 2 DISPOSICIONES FINALES Y ANEXO.", "R.D. 2364/1994 DE 9 DE DICIEMBRE. 5 TÍTULOS , 2 DISPOSICIONES ADICIONALES, DISPOSICIÓN DEROGATORIA ÚNICA , 2 DISPOSICIONES FINALES.", "R.D. 2364/1994 DE 9 DE DICIEMBRE. 5 TÍTULOS , 3 DISPOSICIONES ADICIONALES, DISPOSICIÓN DEROGATORIA ÚNICA , 3 DISPOSICIONES FINALES Y ANEXO."],
+    correct: 0
+  },
+  {
+    q: "18. ¿Donde viene regulado en el reglamento del régimen sancionador y quienes pueden ser objeto de sanción ?",
+    options: ["TITULO V. PUEDEN SER OBJETO DE SANCIÓN EMPRESAS DE SEGURIDAD, PERSONAL DE SEGURIDAD, USUARIOS DE SERVICIOS DE SEGURIDAD, ESTABLECIMIENTOS OBLIGADOS A DISPONER DE MEDIDAS DE SEGURIDAD.", "TITULO V. PUEDEN SER OBJETO DE SANCIÓN EMPRESAS DE SEGURIDAD, PERSONAL DE SEGURIDAD, ESTABLECIMIENTOS OBLIGADOS A DISPONER DE MEDIDAS DE SEGURIDAD.", "TITULO VI. PUEDEN SER OBJETO DE SANCIÓN EMPRESAS DE SEGURIDAD, PERSONAL DE SEGURIDAD, USUARIOS DE SERVICIOS DE SEGURIDAD, ESTABLECIMIENTOS OBLIGADOS A DISPONER DE MEDIDAS DE SEGURIDAD.", "TITULO V. PUEDEN SER OBJETO DE SANCIÓN EMPRESAS DE SEGURIDAD, PERSONAL DE SEGURIDAD, USUARIOS DE SERVICIOS DE SEGURIDAD, ESTABLECIMIENTOS NO OBLIGADOS A DISPONER DE MEDIDAS DE SEGURIDAD."],
+    correct: 0
+  },
+  {
+    q: "19. Tipos de infracciones y prescripción de las mismas:",
+    options: ["LEVES, GRAVES Y MUY GRAVES. 6 MESES, 1 AÑO, 2 AÑOS.", "LEVES, GRAVES Y MUY GRAVES. 1 AÑO, 2 AÑOS, 3 AÑOS", "LEVES, GRAVES Y MUY GRAVES. 6 MESES, 1 AÑO, 2 AÑOS.", "LEVES, GRAVES Y MUY GRAVES. 3 MESES, 6 MESES, 2 AÑOS."],
+    correct: 0,
+    lock: true
+  },
+  {
+    q: "20. Sanciones por infracciones según el reglamento:",
+    options: ["MUY GRAVES MULTA DE 20001 A 50000 EUROS. INFRACCIÓN GRAVES MULTA DE 3001 A 20000 EUROS. LEVES DE 300 A 3000 EUROS", "MUY GRAVES MULTA DE 50001 A 100000 EUROS. INFRACCIÓN GRAVES MULTA DE 3001 A 50001 EUROS. LEVES DE 300 A 3000 EUROS", "MUY GRAVES MULTA DE 20001 A 100000 EUROS. INFRACCIÓN GRAVES MULTA DE 3001 A 20000 EUROS. LEVES DE 100 A 3000 EUROS", "MUY GRAVES MULTA DE 20001 A 100000 EUROS. INFRACCIÓN GRAVES MULTA DE 3001 A 20000 EUROS. LEVES DE 300 A 3000 EUROS"],
+    correct: 3
+  },
+  {
+    q: "21. Serán infracciones a los usuarios de servicios de seguridad muy graves:",
+    options: ["UTILIZACIÓN DE APARATOS DE ALARMAS, DISPOSITIVOS O SISTEMAS DE SEGURIDAD NO HOMOLOGADOS QUE FUEREN SUSCEPTIBLES DE CAUSAR GRAVES DAÑOS A LAS PERSONAS O A LOS INTERESADOS GENERALES", "LA UTILIZACIÓN DE APARATOS DE ALARMA O DISPOSITIVOS DE SEGURIDAD QUE NO SE HALLEN DEBIDAMENTE HOMOLOGADOS, ASÍ COMO LAS CONTRATACIÓN DE LOS SERVICIOS DE EMPRESAS CARENTES DE HABILITACIÓN ESPECÍFICA NECESARIA PARA EL DESARROLLO DE LA SEGURIDAD PRIVADA.", "UTILIZACIÓN DE APARATOS O DISPOSITIVOS DE SEGURIDAD SIN AJUSTARSE A LAS NORMAS QUE LOS REGULEN O SU FUNCIONAMIENTO CON DAÑOS O MOLESTIAS PARA TERCEROS", "INSTALACIÓN DE MARCADORES AUTOMÁTICOS PARA TRANSMITIR ALARMAS DIRECTAMENTE A FFCCS, ASÍ COMO CONTRATACIÓN O UTILIZACIÓN DE PERSONAL DE SEGURIDAD QUE CAREZCA DE HABILITACIÓN ESPECÍFICA NECESARIA, A SABIENDA QUE NO REÚNE LOS REQUISITOS LEGALES."],
+    correct: 0
+  },
+  {
+    q: "22. Serán infracciones a los usuarios de servicios de seguridad graves:",
+    options: ["UTILIZACIÓN DE APARATOS DE ALARMAS, DISPOSITIVOS O SISTEMAS DE SEGURIDAD NO HOMOLOGADOS QUE FUEREN SUSCEPTIBLES DE CAUSAR GRAVES DAÑOS A LAS PERSONAS O A LOS INTERESADOS GENERALES", "LA UTILIZACIÓN DE APARATOS DE ALARMA O DISPOSITIVOS DE SEGURIDAD QUE NO SE HALLEN DEBIDAMENTE HOMOLOGADOS, ASÍ COMO LAS CONTRATACIÓN DE LOS SERVICIOS DE EMPRESAS CARENTES DE HABILITACIÓN ESPECÍFICA NECESARIA PARA EL DESARROLLO DE LA SEGURIDAD PRIVADA.", "UTILIZACIÓN DE APARATOS O DISPOSITIVOS DE SEGURIDAD SIN AJUSTARSE A LAS NORMAS QUE LOS REGULEN O SU FUNCIONAMIENTO CON DAÑOS O MOLESTIAS PARA TERCEROS", "INSTALACIÓN DE MARCADORES AUTOMÁTICOS PARA TRANSMITIR ALARMAS DIRECTAMENTE A FFCCS, ASÍ COMO CONTRATACIÓN O UTILIZACIÓN DE PERSONAL DE SEGURIDAD QUE CAREZCA DE HABILITACIÓN ESPECÍFICA NECESARIA, A SABIENDA QUE NO REÚNE LOS REQUISITOS LEGALES."],
+    correct: 1
+  },
+  {
+    q: "23. Serán infracciones a los usuarios de servicios de seguridad leves:",
+    options: ["UTILIZACIÓN DE APARATOS DE ALARMAS, DISPOSITIVOS O SISTEMAS DE SEGURIDAD NO HOMOLOGADOS QUE FUEREN SUSCEPTIBLES DE CAUSAR GRAVES DAÑOS A LAS PERSONAS O A LOS INTERESADOS GENERALES", "C Y D SON CORRECTAS.", "UTILIZACIÓN DE APARATOS O DISPOSITIVOS DE SEGURIDAD SIN AJUSTARSE A LAS NORMAS QUE LOS REGULEN O SU FUNCIONAMIENTO CON DAÑOS O MOLESTIAS PARA TERCEROS", "INSTALACIÓN DE MARCADORES AUTOMÁTICOS PARA TRANSMITIR ALARMAS DIRECTAMENTE A FFCCS, ASÍ COMO CONTRATACIÓN O UTILIZACIÓN DE PERSONAL DE SEGURIDAD QUE CAREZCA DE HABILITACIÓN ESPECÍFICA NECESARIA, A SABIENDA QUE NO REÚNE LOS REQUISITOS LEGALES."],
+    correct: 1,
+    lock: true
+  },
+  {
+    q: "24. ¿Que expone el artículo 1.2 de la ley 5/2014?",
+    options: ["COORDINACIÓN CON FFCCS, DE LOS QUE SON COMPLEMENTARIOS", "DESARROLLO DE LA SEGURIDAD PRIVADA", "PROFESIONALIZACIÓN", "NINGUNA ES CORRECTA"],
+    correct: 0,
+    lock: true
+  },
+  {
+    q: "25. Según el artículo 5 de la ley, constituyen actividades de seguridad privada: (selecciona la más completa)",
+    options: ["VIGILANCIA Y PROTECCIÓN DE BIENES, ESTABLECIMIENTOS, LUGARES Y EVENTOS PRIVADOS, ASÍ COMO DE LAS PERSONAS QUE PUDIERAN ENCONTRARSE EN LOS MISMOS.", "VIGILANCIA Y PROTECCIÓN DE BIENES, ESTABLECIMIENTOS, LUGARES Y EVENTOS, PUBLICOS ,ASI COMO DE LAS PERSONAS QUE PUDIERAN ENCONTRARSE EN LOS MISMOS.", "VIGILANCIA Y PROTECCIÓN DE BIENES, ESTABLECIMIENTOS, LUGARES Y EVENTOS, TANTO PÚBLICOS Y PRIVADOS, ASÍ COMO DE LAS PERSONAS QUE PUDIERAN ENCONTRARSE EN LOS MISMOS.", "VIGILANCIA Y PROTECCIÓN DE BIENES, ESTABLECIMIENTOS, LUGARES Y EVENTOS, TANTO PÚBLICOS Y PRIVADOS, ASÍ COMO DE LAS PERSONAS QUE PUDIERAN ENCONTRARSE EN LOS MISMOS SIN NECESIDAD DE COLABORACIÓN CON LAS FFCCSS"],
+    correct: 2
+  },
+  {
+    q: "26. Según el artículo 5 de la ley, constituyen actividades de seguridad privada:",
+    options: ["VIGILANCIA Y PROTECCIÓN DE BIENES, ESTABLECIMIENTOS, LUGARES Y EVENTOS, TANTO PÚBLICOS Y PRIVADOS, ASÍ COMO DE LAS PERSONAS QUE PUDIERAN ENCONTRARSE EN LOS MISMOS SIN NECESIDAD DE COLABORACIÓN CON LAS FFCCSS", "ACOMPAÑAMIENTO, DEFENSA Y PROTECCIÓN DE PERSONAS FÍSICAS DETERMINADAS, INCLUIDAS LAS QUE OSTENTEN LA CONDICIÓN LEGAL DE AUTORIDAD.", "INSTALACIÓN DE MECANISMOS DE SEGURIDAD Y GUARDA, AUN NO ESTAN HOMOLOGADOS.", "NINGUNA ES CORRECTA"],
+    correct: 1,
+    lock: true
+  },
+  {
+    q: "27. Según el artículo 5 de la ley, constituyen actividades de seguridad privada:",
+    options: ["VIGILANCIA Y PROTECCIÓN DE BIENES, ESTABLECIMIENTOS, LUGARES Y EVENTOS, TANTO PÚBLICOS Y PRIVADOS, ASÍ COMO DE LAS PERSONAS QUE PUDIERAN ENCONTRARSE EN LOS MISMOS SIN NECESIDAD DE COLABORACIÓN CON LAS FFCCSS", "ACOMPAÑAMIENTO, DEFENSA Y PROTECCIÓN DE PERSONAS FÍSICAS DETERMINADAS, SIEMPRE QUE NO OSTENTEN LA CONDICIÓN LEGAL DE AUTORIDAD.", "INSTALACIÓN Y MANTENIMIENTO DE APARATOS, EQUIPOS, DISPOSITIVOS Y SISTEMAS DE SEGURIDAD CONECTADOS A CENTRALES RECEPTORAS DE ALARMAS O CENTROS DE CONTROL DE VIDEOVIGILANCIA.", "LA EXPLOTACION DE CENTRALES PARA LA CONEXIÓN, RECEPCION, VERIFICACION, Y EN SU CASO , RESPUESTA Y TRANSMISIÓN DE LAS SEÑALES DE DISPOSITIVOS AUXILIARES PARA LA SEGURIDAD DE PERSONAS, DE BIENES INMUEBLES O MUEBLES O DE CUMPLIMIENTO DE MEDIDAS IMPUESTAS, SIN LA NECESIDAD DE COMUNICACIÓN A LAS FFCCS COMPETENTES EN ESTOS CASOS"],
+    correct: 2
+  },
+  {
+    q: "28. Según el artículo 5 de la ley, constituyen actividades de seguridad privada:",
+    options: ["VIGILANCIA Y PROTECCIÓN DE BIENES, ESTABLECIMIENTOS, LUGARES Y EVENTOS, TANTO PÚBLICOS Y PRIVADOS, ASÍ COMO DE LAS PERSONAS QUE PUDIERAN ENCONTRARSE EN LOS MISMOS SIN NECESIDAD DE COLABORACIÓN CON LAS FFCCSS", "ACOMPAÑAMIENTO, DEFENSA Y PROTECCIÓN DE PERSONAS FÍSICAS DETERMINADAS, SIEMPRE QUE NO OSTENTEN LA CONDICIÓN LEGAL DE AUTORIDAD.", "LA EXPLOTACION DE CENTRALES PARA LA CONEXIÓN, RECEPCION, VERIFICACION, Y EN SU CASO , RESPUESTA Y TRANSMISIÓN DE LAS SEÑALES DE DISPOSITIVOS AUXILIARES PARA LA SEGURIDAD DE PERSONAS, DE BIENES INMUEBLES O MUEBLES O DE CUMPLIMIENTO DE MEDIDAS IMPUESTAS, Y LA COMUNICACIÓN A LAS FFCCS COMPETENTES EN ESTOS CASOS.", "INSTALACIÓN Y MANTENIMIENTO DE APARATOS, EQUIPOS, DISPOSITIVOS Y SISTEMAS DE SEGURIDAD CONECTADOS A CENTRALES RECEPTORAS DE ALARMAS O CENTROS DE CONTROL DE VIDEOVIGILANCIA, ASÍ COMO A LA CENTRAL DE LAS FFCCS DE LA ZONA."],
+    correct: 2
+  },
+  {
+    q: "29. ¿Quien debe autorizar que las entidades públicas o privadas puedan constituir centrales receptoras de alarmas de uso propio...?",
+    options: ["AYUNTAMIENTOS DEL LUGAR DONDE SE INSTALE", "MINISTERIO DEL INTERIOR", "MINISTERIO DEL INTERIOR u ÓRGANO AUTONÓMICO COMPETENTE", "SUBDELEGACIÓN O DELEGACIÓN DE GOBIERNO"],
+    correct: 2
+  },
+  {
+    q: "30. Las entidades públicas o privadas que tengan instaladas centrales receptoras de alarma de uso propio ¿pueden dar algún servicio de seguridad a terceros?",
+    options: ["SI, SIEMPRE QUE ESTÉ AUTORIZADO", "NO, SALVO EN LOS CASOS QUE ESTÉ DETERMINADO POR LEY", "NO", "NINGUNA ES CORRECTA"],
+    correct: 2,
+    lock: true
+  },
+  {
+    q: "31. Quedan fuera del ámbito de aplicación de la ley 5/2014:",
+    options: ["FABRICACION, COMERCIALIZACION... SIEMPRE QUE NO ESTÉN CONECTADOS A CENTRALES DE ALARMA O CENTROS DE CONTROL...", "CONEXIÓN DE CENTRALES RECEPTORAS DE ALARMAS DE SISTEMAS DE PREVENCIÓN CONTRA INCENDIOS O DE ALARMAS DE TIPO TÉCNICO O ASISTENCIAL...", "PLANIFICACIÓN , CONSULTORÍA Y ASESORAMIENTO EN MATERIA DE ACTIVIDADES DE SEGURIDAD PRIVADA.", "TODAS SON CORRECTAS."],
+    correct: 3,
+    lock: true
+  },
+  {
+    q: "32. ¿Las empresas de seguridad privada pueden realizar labores de investigación privada?",
+    options: ["SI, SIEMPRE", "SI EN DETERMINADOS CASOS", "NO", "NO SALVO QUE LO SOLICITEN"],
+    correct: 2
+  },
+  {
+    q: "33. Las prohibiciones que establece el artículo 10 de dicha ley tienen en común:",
+    options: ["QUE NO SE PUEDEN REALIZAR ACTIVIDADES SIN LA CORRESPONDIENTE AUTORIZACIÓN O DECLARACIÓN RESPONSABLE, A EXCEPCIÓN DE CASOS CONCRETOS", "TODAS LAS ACTIVIDADES SE DEBEN REALIZAR HABIENDO OBTENIDO AUTORIZACIÓN ADMINISTRATIVA O DECLARACIÓN RESPONSABLE, TÍTULO HABILITANTE O ACREDITACIÓN PROFESIONAL, Y SE DEBEN USAR MEDIOS HOMOLOGADOS...", "SE PUEDEN EJERCER LA ACTIVIDAD SIEMPRE QUE SE TENGA FECHA DE EXAMEN PARA OBTENER LA ACREDITACIÓN PERSONAL", "NINGUNA ES CORRECTA."],
+    correct: 1,
+    lock: true
+  },
+  {
+    q: "34. ¿Los despachos de detectives y los detectives privados pueden celebrar contratos para investigar delitos perseguibles de oficio?",
+    options: ["SI PREVIO PAGO DE HONORARIOS", "SI, YA QUE SE CONSIDERA CONTRATO VÁLIDO Y VINCULANTE", "NO", "NO SALVO EXCEPCIONES"],
+    correct: 2
+  },
+  {
+    q: "35. ¿ Qué debe hacer los detectives o despachos de detectives que tengan conocimiento de un delito público ?",
+    options: ["SEGUIR INVESTIGANDO YA QUE SE CONSIDERA RELACIONADO CON EL ASUNTO POR EL CUAL HAN SIDO CONTRATADOS...", "REALIZAR INVESTIGACIÓN CONJUNTA CON LAS FFCCSS PARA LA RESOLUCIÓN DEL MISMO", "CONTINUAR INVESTIGANDO NO COMUNICANDO TAL HECHO A NADIE.", "SE DEBE DENUNCIAR INMEDIATAMENTE ANTE LA AUTORIDAD COMPETENTE CUALQUIER HECHO DE ESA NATURALEZA, PONIENDO A SU DISPOSICIÓN TODA LA INFORMACIÓN AL RESPECTO..."],
+    correct: 3
+  },
+  {
+    q: "36. ¿Existe la reciprocidad entre los servicios de investigación privada y las empresas de seguridad, pudiendo hacer funciones del otro?",
+    options: ["SI, SIEMPRE", "NO", "SI EN DETERMINADOS CASOS", "SIEMPRE QUE SE SOLICITEN POR FALTA DE MEDIOS TÉCNICOS Y HUMANOS"],
+    correct: 1
+  },
+  {
+    q: "37. ¿Qué dice el artículo 14 de la ley de seguridad privada?",
+    options: ["COOPERACIÓN PROFESIONAL, EN TODO MOMENTO Y LUGAR", "COLABORACIÓN PROFESIONAL, DANDO INFORMACIONES A LAS FFCCS INCLUSO DE DATOS DE CARÁCTER PERSONAL EN DETERMINADAS OCASIONES", "PROPORCIONALIDAD A LA HORA DE ACTUACIONES CON LA CIUDADANÍA", "CÓDIGO DEONTOLÓGICO"],
+    correct: 1
+  },
+  {
+    q: "38. ¿ Qué dice el artículo 15 de la ley de seguridad privada?",
+    options: ["ACCESO A LA INFORMACIÓN POR LA FFCCS, COMO TAMBIÉN A LOS SISTEMAS INSTALADOS POR LAS EMPRESAS DE SEGURIDAD PRIVADA QUE PERMITAN LA COMPROBACIÓN DE LAS INFORMACIONES EN TIEMPO REAL CUANDO ELLO SEA NECESARIO PARA EVITAR UN PELIGRO O REPRESIÓN DE INFRACCIONES PENALES.", "ACCESO A LA INFORMACIÓN POR LA FFCCSS NO PUDIENDO ACCEDER A LOS SISTEMAS INSTALADOS POR LAS EMPRESAS DE SEGURIDAD PRIVADA...", "ACCESO LIMITADO A LA INFORMACIÓN POR LA FFCCS...", "ACCESO A LA INFORMACIÓN POR LA FFCCS... NO PUDIENDO SOLICITAR DICHA INFORMACIÓN PARA LA REPRESIÓN DE INFRACCIONES PENALES"],
+    correct: 0
+  },
+  {
+    q: "39. ¿Se pueden realizar servicios mediante el uso de armas de fuego?",
+    options: ["SI, SE HABRÁN DE ADOPTAR MEDIDAS QUE GARANTICEN SU ADECUADA CUSTODIA, UTILIZACIÓN Y FUNCIONAMIENTO.", "SI", "NO YA QUE NO TIENEN EL DERECHO DE PORTE DE ARMAS DE FUEGO", "NINGUNA ES CORRECTA"],
+    correct: 0,
+    lock: true
+  },
+  {
+    q: "40. ¿Donde se expone la garantización de la formación y actualización profesional del personal de seguridad privada?",
+    options: ["ART 21", "ART 22", "ART 23", "ART 24"],
+    correct: 0
+  },
+  {
+    q: "41. Los representantes legales de las empresas de seguridad privada... deberán:",
+    options: ["JURAR O PROMETER LA CONSTITUCIÓN...", "SOLICITAR SU INSCRIPCIÓN EN LOS AYUNTAMIENTOS...", "NO DEBEN HABER SIDO SEPARADOS DEL SERVICIO EN LAS FUERZAS ARMADAS O EN LAS FFCCS, NI HABER EJERCIDO FUNCIONES DE CONTROL... EN LOS DOS AÑOS ANTERIORES.", "NO DEBEN HABER SIDO SEPARADOS DEL SERVICIO EN LAS FUERZAS ARMADAS O EN LAS FFCCS..."],
+    correct: 2
+  },
+  {
+    q: "42. ¿Cuando gozan de protección jurídica de agente de seguridad los miembros de personal de seguridad privada?",
+    options: ["SIEMPRE QUE SE COMETAN CONTRA ELLOS AGRESIONES Y DESOBEDIENCIAS", "SIEMPRE AUNQUE NO ESTÉN IDENTIFICADOS CORRECTAMENTE", "CUANDO DESARROLLEN ACTIVIDADES DE SEGURIDAD PRIVADA EN COOPERACIÓN Y BAJO EL MANDO DE LAS FFCCS.", "NO GOZAN DE TAL PROTECCIÓN"],
+    correct: 2
+  },
+  {
+    q: "43. Son servicios que se realizarán con armas de fuego en la forma que se determine reglamentariamente (art 40):",
+    options: ["VIGILANCIA Y PROTECCIÓN DEL ALMACENAMIENTO, RECUENTO... DE DINERO...", "VIGILANCIA Y PROTECCIÓN DE BUQUES MERCANTES... EN AGUAS EN RIESGO", "VIGILANCIA Y PROTECCIÓN PERIMETRAL EN CENTROS PENITENCIARIOS, CIES, ESTABLECIMIENTOS MILITARES...", "TODAS SON CORRECTAS"],
+    correct: 3,
+    lock: true
+  },
+  {
+    q: "44. El personal de seguridad privada:",
+    options: ["SÓLO PODRÁ PORTAR EL ARMA DE FUEGO CUANDO ESTÉ DE SERVICIO, Y PODRÁ ACCEDER CON ELLA AL LUGAR DONDE SE DESARROLLE ÉSTE , SALVO QUE REGLAMENTARIAMENTE SE ESTABLEZCA LO CONTRARIO...", "PODRÁ PORTAR EL ARMA DE FUEGO SIEMPRE...", "SÓLO PODRÁ PORTAR EL ARMA DE FUEGO CUANDO ESTÉ DE SERVICIO, Y PODRÁ ACCEDER CON ELLA AL LUGAR DONDE SE DESARROLLE ESTE.", "SÓLO PODRÁ PORTAR EL ARMA DE FUEGO CUANDO ESTÉ DE SERVICIO, Y NO PODRÁ ACCEDER CON ELLA AL LUGAR DONDE SE DESARROLLE ÉSTE..."],
+    correct: 0
+  },
+  {
+    q: "45. ¿Cuando se pueden realizar por miembros de seguridad privada vigilancia perimetral de centros penitenciarios... complementando la acción policial?",
+    options: ["NO SE PODRÁN REALIZAR NUNCA", "SIEMPRE QUE SE CONTRATEN TALES SERVICIOS", "CUANDO ASÍ LO DECIDA EL ÓRGANO COMPETENTE E INSTRUCCIONES DE LAS FFCCS", "NO SE PODRAN REALIZAR NUNCA SALVO CAUSAS DE FUERZA MAYOR"],
+    correct: 2,
+    lock: true
+  },
+  {
+    q: "46. El art 58.2 expone que se considera infracción grave del personal que desempeñe funciones de seguridad privada:",
+    options: ["LA NO ADECUACIÓN DE LOS CURSOS...", "NEGATIVA A PRESTAR COLABORACIÓN O AUXILIO A LAS FFCCS", "LA NEGATIVA A REALIZAR CURSOS DE FORMACIÓN PERMANENTE A LOS QUE VIENEN OBLIGADOS", "A Y B SON CORRECTAS"],
+    correct: 2,
+    lock: true
+  },
+  {
+    q: "47. El artículo 59.1 sobre infracciones de los usuarios y centros de formación expone que se considerará infracción muy grave:",
+    options: ["EL INCUMPLIMIENTO DE LAS REVISIONES PRECEPTIVAS...", "EL INCUMPLIMIENTO, POR PARTE DE LOS CENTROS DE FORMACIÓN , DE LOS REQUISITOS Y CONDICIONES EXIGIDOS EN LA DECLARACIÓN RESPONSABLE, O IMPARTIR CURSOS SIN HABERLA PRESENTADO.", "LA NO COMUNICACIÓN AL ORGANO COMPETENTE DE LAS MODIFICACIONES...", "TODAS SON CORRECTAS"],
+    correct: 1,
+    lock: true
+  },
+  {
+    q: "48. ¿ Qué dice la disposición adicional segunda?",
+    options: ["PROFESIONALIZACIÓN DE LA SEGURIDAD PRIVADA EN ESPAÑA", "REMISIÓN AL DESARROLLO POR PARTE DE UNA LEY DEL CÓDIGO DEONTOLÓGICO...", "UNIFORMIDAD Y ARMAMENTO...", "CONTRATACIÓN DE SERVICIOS DE SEGURIDAD PRIVADA POR LAS ADM.PÚBLICAS ."],
+    correct: 3
+  },
+  {
+    q: "49. La ley y el reglamento son:",
+    options: ["LAS ÚNICAS NORMAS QUE DESARROLLAN LA SEGURIDAD PRIVADA", "LAS NORMAS CON MAYOR RANGO A NIVEL JURÍDICO , AUNQUE EXISTEN OTRAS NORMAS QUE AFECTAN A LA SEGURIDAD PRIVADA", "NO SON LAS MÁS IMPORTANTES DE SEGURIDAD PRIVADA", "NINGUNA ES CORRECTA"],
+    correct: 1,
+    lock: true
+  },
+  {
+    q: "50. En 2011 se realizó una reforma importante... ¿que aspecto más relevante tiene?",
+    options: ["AFECTABA A TODO TIPO DE ÁMBITOS... COMO ASPECTO MÁS RELEVANTE EN LO QUE FFCCS ATAÑE, A LA REDUCCIÓN DRÁSTICA DEL VOLUMEN DE FALSAS ALARMAS NOTIFICADAS POR LAS CRA", "NO AFECTABA A NINGÚN ÁMBITO .", "AFECTABA A TODO TIPO DE ÁMBITOS... COMO ASPECTO MÁS RELEVANTE AL AUMENTO DRÁSTICO DEL VOLUMEN DE FALSAS ALARMAS", "NO AFECTABA A NINGÚN ÁMBITO ."],
+    correct: 0,
+    lock: true
+  },
+  {
+    q: "51. ¿La orden INT/316/2011 de 1 de febrero sobre que habla?",
+    options: ["FUNCIONAMIENTO DE LOS SISTEMAS DE ALARMA EN EL ÁMBITO DE LA SEGURIDAD PRIVADA", "FUNCIONAMIENTO DE LOS SISTEMAS DE ALARMA EN EL ÁMBITO DE LA SEGURIDAD PÚBLICA", "FUNCIONAMIENTO DE LOS SISTEMAS DE ALARMA EN EL ÁMBITO DE LAS FFCCS", "FUNCIONAMIENTO DE LOS SISTEMAS DE ALARMA EN INSTITUCIONES PENITENCIARIAS."],
+    correct: 0
+  },
+  {
+    q: "52. ¿ Qué dice la norma UNE-EN 50131-1?",
+    options: ["EQUIPARACIÓN DE NORMATIVAS DE NIVEL ESTATAL Y NIVEL EUROPEO.", "DEROGACIÓN DE LAS NORMATIVAS ESTATALES...", "EXPONE CUATRO GRADOS DE SEGURIDAD EN FUNCIÓN DEL RIESGO, EN VIRTUD DE NATURALEZA Y CARACTERÍSTICAS DEL LUGAR... Y LA OBLIGACIÓN O NO DE ESTAR CONECTADOS A UNA CENTRAL DE ALARMAS.", "DESARROLLO DEL USO ARMAMENTO TÁCTICO..."],
+    correct: 2
+  },
+  {
+    q: "53. El grado 1 de la norma UNE-EN 50131-1 expone:",
+    options: ["GRADO 1 O BAJO RIESGO A MEDIO, DEDICADO A VIVIENDAS... QUE PRETENDAN CONECTARSE A UNA CENTRAL DE ALARMAS...", "GRADO 1 O RIESGO MEDIO ALTO, DESTINADO A ESTABLECIMIENTOS OBLIGADOS...", "GRADO 1 O BAJO RIESGO, PARA SISTEMAS DE ALARMA DOTADOS DE SEÑALIZACIÓN ACÚSTICA , QUE NO SE VAYAN A CONECTAR A UNA CENTRAL DE ALARMAS O A UN CENTRO DE CONTROL.", "GRADO 1 ALTO RIESGO, RESERVADO A LAS DENOMINADAS INFRAESTRUCTURAS CRÍTICAS..."],
+    correct: 2
+  },
+  {
+    q: "54. El grado 2 de la norma UNE-EN 50131-1 expone:",
+    options: ["GRADO 2 O BAJO RIESGO A MEDIO, DEDICADO A VIVIENDAS Y PEQUEÑOS ESTABLECIMIENTOS, COMERCIOS E INDUSTRIAS EN GENERAL, QUE PRETENDAN CONECTARSE A UNA CENTRAL DE ALARMAS O , EN SU CASO, A UN CENTRO DE CONTROL.", "GRADO 2 O RIESGO MEDIO ALTO...", "GRADO 2 O BAJO RIESGO... QUE NO SE VAYAN A CONECTAR A UNA CENTRAL...", "GRADO 2 O ALTO RIESGO..."],
+    correct: 0
+  },
+  {
+    q: "55. El grado 3 de la norma UNE-EN 50131-1 expone:",
+    options: ["GRADO 3 O BAJO RIESGO A MEDIO...", "GRADO 3 O RIESGO MEDIO ALTO, DESTINADO A ESTABLECIMIENTOS OBLIGADOS A DISPONER DE MEDIDAS DE SEGURIDAD, ASÍ COMO OTRAS INSTALACIONES COMERCIALES O INDUSTRIALES.", "GRADO 3 O BAJO RIESGO...", "GRADO 3 O ALTO RIESGO..."],
+    correct: 1
+  },
+  {
+    q: "56. El grado 4 de la norma UNE-EN 50131-1 expone:",
+    options: ["GRADO 4 O BAJO RIESGO A MEDIO...", "GRADO 4 O RIESGO MEDIO ALTO...", "GRADO 4 O BAJO RIESGO...", "GRADO 4 O ALTO RIESGO, RESERVADO A LAS DENOMINADAS INFRAESTRUCTURAS CRÍTICAS , INSTALACIONES MILITARES, ESTABLECIMIENTOS QUE ALMACENEN MATERIAL EXPLOSIVO REGLAMENTADO..."],
+    correct: 3
+  },
+  {
+    q: "57. El artículo 6 de la orden INT/316/2011... punto 1:",
+    options: ["VERIFICACIÓN DE LAS ALARMAS COMUNICANDO AL SERVICIO POLICIAL CORRESPONDIENTE TODAS ELLAS.", "VERIFICACIÓN DE LAS ALARMAS QUEDANDO TODAS ELLAS INSCRITAS EN EL REGISTRO INFORMATIZADO...", "VERIFICACIÓN DE LAS ALARMAS COMUNICANDO AL SERVICIO POLICIAL CORRESPONDIENTE, LAS ALARMAS REALES PRODUCIDAS.", "A Y B SON CORRECTAS."],
+    correct: 2,
+    lock: true
+  },
+  {
+    q: "58. El artículo 6 de la orden INT/316/2011... punto 2:",
+    options: ["PARA EL CORRECTO FUNCIONAMIENTO DE LAS CENTRALES DE ALARMA DEBERÁN ESTAR ATENDIDAS PERMANENTEMENTE... SIN QUE EN NINGÚN CASO PUEDEN SER MENOS DE DOS OPERADORES POR TURNO ORDINARIO DE TRABAJO.", "... MENOS DE TRES OPERADORES...", "... MENOS DE CUATRO OPERADORES...", "... MENOS DE CINCO OPERADORES..."],
+    correct: 0
+  },
+  {
+    q: "59. Definición Verificación secuencial (art 7):",
+    options: ["DEBE PERMITIR, A TRAVÉS DE LA IMAGEN...", "CONSISTE EN LA RECEPCIÓN DE TRES O MÁS SEÑALES DE ELEMENTOS DISTINTOS EN UN TIEMPO QUE NO SUPERE LOS 30 MINUTOS", "UTILIZA EL SONIDO PARA DISCRIMINAR...", "RECURSO... PUEDE SUPONER UNA EFICAZ COLABORACIÓN CON LAS FFCCSS"],
+    correct: 1
+  },
+  {
+    q: "60. Definición de Verificación mediante video (art 8):",
+    options: ["DEBE PERMITIR, A TRAVÉS DE LA IMAGEN, DISCRIMINAR LA VERACIDAD O NO DE LA SEÑAL RECIBIDA. EL SISTEMA DEBE REGISTRAR UN MÍNIMO DE UNA IMAGEN DEL MOMENTO EXACTO DE LA ALARMA Y DOS IMÁGENES POSTERIORES DE 5 SEGUNDOS", "CONSISTE EN LA RECEPCIÓN DE TRES O MÁS SEÑALES...", "UTILIZA EL SONIDO PARA DISCRIMINAR...", "RECURSO... EFICAZ COLABORACIÓN CON LAS FFCCSS"],
+    correct: 0
+  },
+  {
+    q: "61. Definición Verificación por audio (art 9):",
+    options: ["DEBE PERMITIR, A TRAVÉS DE LA IMAGEN...", "CONSISTE EN LA RECEPCIÓN DE TRES O MÁS SEÑALES...", "UTILIZA EL SONIDO PARA DISCRIMINAR LAS SEÑALES REALES DE LAS FALSAS, CONTANDO CON LA GRABACIÓN DE 10 SEGUNDOS PREVIOS AL SALTO DE ALARMA.", "RECURSO... EFICAZ COLABORACIÓN CON LAS FFCCSS"],
+    correct: 2
+  },
+  {
+    q: "62. Definición Verificación personal (art 10):",
+    options: ["DEBE PERMITIR, A TRAVÉS DE LA IMAGEN...", "CONSISTE EN LA RECEPCIÓN DE TRES O MÁS SEÑALES...", "UTILIZA EL SONIDO...", "RECURSO, QUE ADEMÁS DE EFECTIVO, PUEDE SUPONER UNA EFICAZ COLABORACIÓN CON LAS FFCCSS QUE ATIENDAN LOS SERVICIOS."],
+    correct: 3
+  },
+  {
+    q: "63. Que dice el artículo 14 de la orden INT/316/2011 de 1 de febrero habla:",
+    options: ["DENUNCIA DE ALARMAS", "GRADOS DE ALARMAS", "COOPERACION Y COLABORACION CON LAS FFCCSS", "TODAS SON CORRECTAS"],
+    correct: 0,
+    lock: true
+  },
+  {
+    q: "64. Que dice el artículo 14.2 de la orden INT/316/2011 de 1 de febrero expone:",
+    options: ["LA TRANSMISIÓN DE UNA ALARMA CONFIRMADA, QUE RESULTE FALSA, A LAS FFCCS PODRÁ SER OBJETO DE DENUNCIA PARA LA IMPOSICIÓN DE LA CORRESPONDIENTE SANCIÓN .", "LA TRANSMISIÓN DE UNA ALARMA NO CONFIRMADA, QUE RESULTE FALSA...", "LA TRANSMISIÓN DE UNA ALARMA NO CONFIRMADA, QUE RESULTE POSITIVA...", "LA TRANSMISIÓN DE UNA ALARMA CONFIRMADA, QUE RESULTE POSITIVA..."],
+    correct: 0
+  },
+  {
+    q: "65. Si no se comunica una alarma por temor a las sanciones, cuando a posteriori sean confirmadas como reales, ¿que consecuencias pueden tener?",
+    options: ["NINGUNA", "INFRACCIÓN PENAL", "B Y D SON CORRECTAS", "PROPUESTA DE SANCIÓN"],
+    correct: 3,
+    lock: true
+  },
+  {
+    q: "66. La formación del personal de centrales de alarma... viene en la orden INT/316/2011 en el artículo:",
+    options: ["23", "28", "21", "20"],
+    correct: 2
+  },
+  {
+    q: "67. La orden INT/318/2011... en su artículo 22 habla sobre la posibilidad de utilizar otros tipos de uniformidad, ¿que será necesario para efectuar tal cambio?",
+    options: ["NADA", "NADA, SIEMPRE QUE VAYAN CORRECTAMENTE IDENTIFICADOS...", "SOLICITUD PREVIA A LA UNIDAD ORGÁNICA CENTRAL DE SEGURIDAD PRIVADA DEL CUERPO NACIONAL DE POLICÍA Y SU POSTERIOR APROBACIÓN .", "SOLICITUD PREVIA A LA UNIDAD..."],
+    correct: 2
+  },
+  {
+    q: "68. El artículo 26 de la orden INT/318/2011... apartado 3 expone:",
+    options: ["LA DIRECCIÓN GENERAL DE POLICIAL Y DE LA GUARDIA CIVIL, ÁMBITO DEL CUERPO NACIONAL DE POLICÍA , PREVIA SOLICITUD DE LA EMPRESA DE SEGURIDAD, PODRÁ AUTORIZAR LA SUSTITUCIÓN O COMPLEMENTO DE LA DEFENSA REGLAMENTARIA POR OTRAS ARMAS DEFENSIVAS...", "... ÁMBITO DE LA GUARDIA CIVIL...", "... AUNQUE SUS CARACTERÍSTICAS Y EMPLEO NO SE AJUSTEN A LO PREVENIDO EN EL REGLAMENTO DE ARMAS.", "... Y SIN LA NECESIDAD DE LA PREVIA SOLICITUD..."],
+    correct: 0
+  },
+  {
+    q: "69. El artículo 26 de la orden INT/318/2011... apartado 4 expone:",
+    options: ["... ÁMBITO LA GUARDIA CIVIL... PODRÁ AUTORIZAR...", "... ÁMBITO DEL CUERPO NACIONAL DE POLICÍA , DEBERÁ AUTORIZAR...", "... ÁMBITO DE LA GUARDIA CIVIL, DEBERÁ AUTORIZAR...", "LA DIRECCIÓN GENERAL DE POLICÍA Y DE LA GUARDIA CIVIL, ÁMBITO DEL CUERPO NACIONAL DE POLICÍA , A PETICIÓN DE LA EMPRESA DE SEGURIDAD, PODRÁ AUTORIZAR LA UTILIZACIÓN DE OTROS ELEMENTOS DEFENSIVOS..."],
+    correct: 3
+  },
+  {
+    q: "70. ¿ Qué ocurre si un vigilante de seguridad pasa dos años o más de inactividad?",
+    options: ["DEBE REALIZAR UN CURSO DE 40 HORAS LECTIVAS POR UNA ACADEMIA HOMOLOGADA PARA SU REACTIVACIÓN .", "NO OCURRE NADA", "DEBE VOLVER A REALIZAR LA FORMACIÓN COMPLETA DESDE UN PRINCIPIO...", "NINGUNA ES CORRECTA"],
+    correct: 0,
+    lock: true
+  },
+  {
+    q: "71. ¿Que tipo de trato recibirá el personal de seguridad privada por parte de las FFCCS según lo establecido el art 34 de dicha orden?",
+    options: ["TRATO PREFERENTE", "TRATO PREFERENTE Y DEFERENTE DENTRO DE DEPENDENCIAS POLICIALES", "TRATO PREFERENTE Y DEFERENTE TANTO DENTRO COMO FUERA DE DEPENDENCIAS POLICIALES", "TRATO DEFERENTE."],
+    correct: 2
+  },
+  {
+    q: "72. El artículo 35 de dicha orden INT/318/2011 que habla de la consideración legal expone:",
+    options: ["EN EL CUMPLIMIENTO DE SU DEBER DE COLABORACIÓN , EL PERSONAL DE SEGURIDAD PRIVADA TENDRÁ LA CONSIDERACIÓN JURÍDICA QUE OTORGAN LAS LEYES A LOS QUE ACUDEN EN AUXILIO O COLABORAN CON LA AUTORIDAD O SUS AGENTES.", "... PODRÁ TENER LA CONSIDERACIÓN JURÍDICA...", "... NO TENDRÁ LA CONSIDERACIÓN JURÍDICA...", "NINGUNA ES CORRECTA"],
+    correct: 0,
+    lock: true
+  },
+  {
+    q: "73. Donde no podrán las empresas de seguridad privada prestar o desempeñar funciones:",
+    options: ["VIGILANCIA Y PROTECCIÓN DE BIENES...", "ACOMPAÑAMIENTO, DEFENSA Y PROTECCIÓN DE PERSONAS...", "DEPOSITO, CUSTODIA, RECUENTO Y CLASIFICACIÓN DE MONEDAS...", "INSTALACIÓN Y MANTENIMIENTO DE APARATOS, EQUIPOS, DISPOSITIVOS Y SISTEMAS DE SEGURIDAD CONECTADOS A LAS CENTRALES DE POLICÍA QUE LE CORRESPONDAN POR TERRITORIALIDAD."],
+    correct: 3
+  },
+  {
+    q: "74. Donde no podrán las empresas de seguridad privada prestar o desempeñar funciones:",
+    options: ["INVESTIGACIÓN PÚBLICA EN RELACIÓN A PERSONAS, HECHOS O DELITOS SÓLO PERSEGUIBLES DE OFICIO.", "INSTALACIÓN Y MANTENIMIENTO DE APARATOS... CONECTADOS A CENTRALES RECEPTORAS DE ALARMAS O A CENTROS DE CONTROL O DE VIDEOVIGILANCIA.", "EXPLOTACIÓN DE CENTRALES PARA LA CONEXIÓN, RECEPCION, VERIFICACION...", "INVESTIGACIÓN PRIVADA EN RELACIÓN A PERSONAS, HECHOS O DELITOS SÓLO PERSEGUIBLES A INSTANCIA DE PARTE."],
+    correct: 0
+  },
+  {
+    q: "75. Los vigilantes de seguridad desarrollaran sus funciones integrados en empresas autorizadas para las actividades:",
+    options: ["EFECTUAR CONTROLES DE IDENTIDAD... SIN QUE, EN NINGÚN CASO PUEDAN RETENER LA DOCUMENTACIÓN PERSONAL, PERO SÍ IMPEDIR EL ACCESO...", "DETENER Y PONER INMEDIATAMENTE A DISPOSICIÓN DE LAS FFCCSS A LOS DELINCUENTES... NO PODRÁN PROCEDER AL INTERROGATORIO...", "A Y B SON CORRECTAS.", "A Y B SON FALSAS"],
+    correct: 2,
+    lock: true
+  },
+  {
+    q: "76. Son funciones de los escoltas privados:",
+    options: ["ACOMPAÑAMIENTO, DEFENSA, PROTECCIÓN DE PERSONAS DETERMINADAS, O DE GRUPOS CONCRETOS DE PERSONAS, IMPIDIENDO QUE SEAN OBJETO DE AGRESIONES O ACTOS DELICTIVOS.", "REALIZAR TRABAJOS CONJUNTOS CON LAS EMPRESAS DE SEGURIDAD Y RECEPTORAS DE ALARMAS.", "PROTECCIÓN DE OBRAS DE ARTE, DINERO, VALORES Y OBJETOS VALIOSOS", "B Y C SON CORRECTAS"],
+    correct: 0,
+    lock: true
+  },
+  {
+    q: "77. En el desempeño de sus funciones, los escoltas:",
+    options: ["PODRÁN REALIZAR IDENTIFICACIONES O DETENCIONES EN LA VÍA PÚBLICA EN CUALQUIER MOMENTO...", "NO PODRÁN REALIZAR IDENTIFICACIONES O DETENCIONES... SALVO QUE RESULTARE IMPRESCINDIBLE COMO CONSECUENCIA DE UNA AGRESIÓN O DE UN INTENTO DE AGRESIÓN A PERSONA PROTEGIDA O A LOS PROPIOS ESCOLTAS...", "SÍ PODRÁN REALIZAR IDENTIFICACIONES PERO NO DETENCIONES...", "PUEDEN RESTRINGIR LA LIBRE CIRCULACIÓN... EN ARAS DE PROTEGER LA RELACIÓN MERCANTIL CONTRACTUAL."],
+    correct: 1
+  },
+  {
+    q: "78. Los jefes de seguridad en el ámbito de sus funciones le corresponde:",
+    options: ["CONTROL DEL FUNCIONAMIENTO Y MANTENIMIENTO DE LOS SISTEMAS DE SEGURIDAD PRIVADA", "IDENTIFICACION, ANALISIS Y EVALUACION DE SITUACIONES DE RIESGO...", "ORGANIZACIÓN, DIRECCIÓN , INSPECCIÓN Y ADMINISTRACIÓN DE LOS SERVICIOS Y RECURSOS DE SEGURIDAD PRIVADA DISPONIBLES.", "LA RESPONSABILIDAD SOBRE LA CUSTODIA Y EL TRASLADO DE ARMAS..."],
+    correct: 2
+  },
+  {
+    q: "79. Las empresas de seguridad, despachos de detectives y el personal de seguridad privada:",
+    options: ["COLABORAR CON LAS FFCCSS", "COMUNICACIÓN A LAS FFCCS TODO HECHO DELICTIVO... PARA LA PREVENCIÓN , MANTENIMIENTO O RESTABLECIMIENTO DE LA SEGURIDAD CIUDADANA.", "FFCCS PUEDEN FACILITAR AL PERSONAL DE SEGURIDAD PRIVADA INFORMACIONES QUE FACILITEN SU EVALUACIÓN DE RIESGOS...", "TODAS SON CORRECTAS."],
+    correct: 3,
+    lock: true
+  },
+  {
+    q: "80. ¿Quien es la encargada de la supervisión de las empresas de seguridad y sus actividades, como también del personal de seguridad privada?",
+    options: ["SUBDELEGACIÓN O DELEGACIÓN DE GOBIERNO CORRESPONDIENTE", "AYUNTAMIENTOS DE LA LOCALIDAD...", "UNIDAD CENTRAL DE SEGURIDAD PRIVADA DE LA COMISARÍA GENERAL DE SEGURIDAD CIUDADANA", "UNIDAD CENTRAL DE LA GUARDIA CIVIL"],
+    correct: 2
+  },
+  {
+    q: "81. La seguridad privada está considerada como actividad complementaria y subordinada de la seguridad pública , ¿es correcta esta afirmación ?",
+    options: ["SI, SALVO EN DETERMINADOS CASOS QUE PUEDE NO ESTAR SUBORDINADA", "SI", "NO, SALVO DETERMINADOS CASOS", "NO"],
+    correct: 1,
+    lock: true
+  },
+  {
+    q: "82. Es competencia en materia de sanciones por parte del Ministerio del Interior:",
+    options: ["IMPONER SANCIONES GRAVES", "IMPONER SANCIONES GRAVES EN RELACIÓN CON LOS GUARDAS RURALES...", "IMPONER SANCIONES DE EXTINCIÓN DE LAS AUTORIZACIONES, HABILITACIONES Y DECLARACIONES RESPONSABLES.", "IMPONER LAS RESTANTES SANCIONES POR INFRACCIONES MUY GRAVES."],
+    correct: 2
+  },
+  {
+    q: "83. Es competencia en materia de sanciones por parte del Secretario de Estado de Seguridad:",
+    options: ["IMPONER SANCIONES GRAVES", "IMPONER SANCIONES GRAVES EN RELACIÓN CON LOS GUARDAS RURALES...", "IMPONER SANCIONES DE EXTINCIÓN...", "IMPONER LAS RESTANTES SANCIONES POR INFRACCIONES MUY GRAVES."],
+    correct: 3
+  },
+  {
+    q: "84. Es competencia en materia de sanciones por parte del Director General de la Policía:",
+    options: ["IMPONER SANCIONES GRAVES", "IMPONER SANCIONES GRAVES EN RELACIÓN CON LOS GUARDAS RURALES...", "IMPONER SANCIONES DE EXTINCIÓN...", "IMPONER LAS RESTANTES SANCIONES POR INFRACCIONES MUY GRAVES."],
+    correct: 0
+  },
+  {
+    q: "85. Es competencia en materia de sanciones por parte del Director General de la Guardia Civil:",
+    options: ["IMPONER SANCIONES GRAVES", "IMPONER SANCIONES GRAVES EN RELACIÓN CON LOS GUARDAS RURALES Y CENTROS Y CURSOS DE FORMACIÓN EXCLUSIVOS PARA ESTE PERSONAL", "IMPONER SANCIONES DE EXTINCIÓN...", "IMPONER LAS RESTANTES SANCIONES POR INFRACCIONES MUY GRAVES."],
+    correct: 1
+  },
+  {
+    q: "86. Es competencia en materia de sanciones por parte del Delegado y Subdelegados del Gobierno:",
+    options: ["IMPONER SANCIONES GRAVES", "IMPONER SANCIONES LEVES.", "IMPONER SANCIONES DE EXTINCIÓN...", "IMPONER LAS RESTANTES SANCIONES POR INFRACCIONES MUY GRAVES."],
+    correct: 0
+  },
+  {
+    q: "87. El Cuerpo Nacional de Policía tiene como funciones en temas de seguridad privada:",
+    options: ["HABILITACIÓN , AUTORIZACIÓN , INSPECCIÓN , CONTROL Y ARCHIVO DE TODOS AQUELLO RELATIVO AL PERSONAL Y EMPRESAS DE SEGURIDAD PRIVADA, A EXCEPCIÓN DE LA PARCELA QUE TIENE ENCOMENDADA LA GUARDIA CIVIL.", "ÚNICAMENTE TIENEN EL CONTROL Y SANCIÓN EN MATERIA DE SEGURIDAD PRIVADA", "HABILITACIÓN , AUTORIZACIÓN , INSPECCIÓN , CONTROL Y ARCHIVO DE TODO AQUELLO RELATIVO AL PERSONAL Y EMPRESAS DE SEGURIDAD PRIVADA.", "NINGUNA ES CORRECTA"],
+    correct: 0,
+    lock: true
+  },
+  {
+    q: "88. ¿ En qué materias tiene competencias expresamente en la normativa de seguridad privada?",
+    options: ["RELATIVA A ARMAMENTO, SEGURIDAD DE PERSONAS Y MUNICIÓN", "RELATIVA AL ARMAMENTO, MUNICIÓN , GUARDIAS RURALES Y SUS ESPECIALIDADES", "ÚNICAMENTE EN LO REFERENTE A LOS GUARDIAS RURALES", "NO TIENEN NINGÚN TIPO DE COMPETENCIAS"],
+    correct: 1,
+    lock: true
+  },
+  {
+    q: "89. En relación al armamento y munición , la Guardia Civil tiene encomendadas:",
+    options: ["AUTORIZACIÓN E INSPECCIÓN DE ARMEROS, TANTO DE ARMAS COMO DE MUNICIÓN", "EXPEDICIÓN Y SEGUIMIENTO DE LICENCIAS DE ARMAS DEL PERSONAL DE SEGURIDAD PRIVADA", "SUPERVISIÓN Y CONTROL DE LOS EJERCICIOS DE TIRO... ASÍ COMO CONTROL DE LA CARTUCHERÍA CONSUMIDA.", "TODAS SON CORRECTAS"],
+    correct: 3,
+    lock: true
+  },
+  {
+    q: "90. Selecciona la opción correcta:",
+    options: ["EL TIPO DE LICENCIA... DE LOS DIRECTORES DE SEGURIDAD ES LA DEL TIPO A, Y LA DEL TIPO C ES LA CORRESPONDIENTE A PERSONAL OPERATIVO...", "EL TIPO DE LICENCIA... DE LOS DIRECTORES DE SEGURIDAD ES LA DEL TIPO B, Y LA DEL TIPO A ES LA CORRESPONDIENTE A PERSONAL OPERATIVO...", "EL TIPO DE LICENCIA QUE PUEDEN LLEGAR A PORTAR LOS DIRECTORES DE SEGURIDAD ES LA DEL TIPO B, Y LA DEL TIPO C ES LA CORRESPONDIENTE A PERSONAL OPERATIVO DE SEGURIDAD PRIVADA.", "EL TIPO DE LICENCIA... DE LOS DIRECTORES DE SEGURIDAD ES LA DEL TIPO C, Y LA DEL TIPO C ES LA CORRESPONDIENTE A PERSONAL OPERATIVO..."],
+    correct: 2
+  },
+  {
+    q: "91. Los organismos consultivos ante cualquier duda... son:",
+    options: ["CUERPO NACIONAL DE POLICÍA Y GUARDIA CIVIL", "SUBDELEGACIÓN O DELEGACIÓN DE GOBIERNO DEPENDIENDO DEL CASO", "MINISTERIO DEL INTERIOR", "SECRETARIO DEL INTERIOR"],
+    correct: 2
+  },
+  {
+    q: "92. Si es a nivel nacional, ¿que criterio se puede considerar suficiente?",
+    options: ["SECRETARÍA GENERAL TÉCNICA DEL MINISTERIO DEL INTERIOR, ÓRGANO CONSULTIVO EN MATERIA DE SEGURIDAD PRIVADA", "SECRETARIA DE INTERIOR", "GRUPO DE SEGURIDAD PRIVADA O COMANDANCIA DE LA GUARDIA CIVIL", "NINGUNA ES CORRECTA"],
+    correct: 0,
+    lock: true
+  },
+  {
+    q: "93. ¿ CUÁNDO FUE LA PRIMERA VEZ QUE SE MENCIONA A LA FIGURA DE DIRECTOR DE SEGURIDAD?",
+    options: ["LEY DE SEGURIDAD PRIVADA DEL 92", "LEY ACTUAL DE SEGURIDAD PRIVADA 5/2014", "REGLAMENTO QUE DESARROLLA LA LEY DEL 92", "ORDEN INT 318/2011"],
+    correct: 2
+  },
+  {
+    q: "94. ¿Donde vienen expuestas las funciones del director de seguridad en la ley 5/2014?",
+    options: ["ART 33", "ART 35", "ART 36", "ART 38"],
+    correct: 2
+  },
+  {
+    q: "95. ¿ Qué dos normas modificaron el reglamento de seguridad privada y constituyen un cambio en la figura del director de seguridad?",
+    options: ["LEY 1123/2001 DE 19 DE OCTUBRE Y R.D. 4/2008 DE 11 DE ENERO", "R.D. 1123/2001 DE 19 DE OCTUBRE Y R.D. 4/2008 DE 11 DE ENERO", "R.D. 1123/2011 DE 19 DE OCTUBRE Y R.D. 4/2008 DE 11 DE ENERO", "LEY 1123/2001 DE 19 DE OCTUBRE Y LEY 4/2008 DE 11 DE ENERO"],
+    correct: 1
+  },
+  {
+    q: "96. El personal de seguridad privada está integrada por :",
+    options: ["VIGILANTES DE SEGURIDAD, VIGILANTES DE EXPLOSIVOS, JEFES DE SEGURIDAD, DIRECTORES DE SEGURIDAD, ESCOLTAS PRIVADOS, GUARDAS PARTICULARES DE CAMPO, GUARDAS DE CAZA, GUARDAPESCAS MARÍTIMOS Y LOS DETECTIVES PRIVADOS", "VIGILANTES DE SEGURIDAD, JEFES DE SEGURIDAD, DIRECTORES DE SEGURIDAD, ESCOLTAS PRIVADOS, GUARDAS PARTICULARES DE CAMPO, GUARDAPESCAS MARÍTIMOS Y LOS DETECTIVES PRIVADOS", "VIGILANTES DE SEGURIDAD, VIGILANTES DE EXPLOSIVOS... MIEMBROS DEL GRUPO DE SEGURIDAD PRIVADA DEPENDIENTES DE SEGURIDAD CIUDADANA...", "VIGILANTES DE SEGURIDAD, VIGILANTES DE EXPLOSIVOS, JEFES DE SEGURIDAD, DIRECTORES DE SEGURIDAD, ESCOLTAS PRIVADOS Y LOS DETECTIVES PRIVADOS."],
+    correct: 0
+  },
+  {
+    q: "97. Los escoltas privados y los vigilantes de explosivos... están encuadrados como especialidades:",
+    options: ["DE LOS DIRECTORES DE SEGURIDAD", "DE LOS JEFES DE SEGURIDAD", "GUARDAS PARTICULARES DE CAMPO", "VIGILANTES DE SEGURIDAD"],
+    correct: 3
+  },
+  {
+    q: "98. Los guardas de caza y los guardapescas marítimos están encuadrados como especialidades:",
+    options: ["EJECUTIVO DE PERSONAL DE SEGURIDAD PRIVADA", "VIGILANTES DE SEGURIDAD", "GUARDAS PARTICULARES DE CAMPO", "NINGUNA ES CORRECTA"],
+    correct: 2,
+    lock: true
+  },
+  {
+    q: "99. La anterior redacción de la ley con la actual supone un cambio muy significativo en lo que respecta al director de seguridad, siendo:",
+    options: ["ES LA PRIMERA VEZ QUE CONSTA COMO TAL EN LA LEY", "LO ENTABLA COMO EN UN ESCALÓN SUPERIOR AL RESTO DE MIEMBROS...", "ANTERIORMENTE EL DIRECTOR DE SEGURIDAD ESTABA CONSIDERADO COMO UNA ESPECIALIDAD DEL JEFE DE SEGURIDAD, EN LA ACTUAL REDACCIÓN SE SEÑALA COMO PERSONAL DE SEGURIDAD PRIVADA INDEPENDIENTE.", "A Y B SON CORRECTAS"],
+    correct: 2,
+    lock: true
+  },
+  {
+    q: "100. ¿que es necesario para ser nombrado jefe de seguridad?",
+    options: ["HABER DESEMPEÑADO PUESTOS O FUNCIONES DE SEGURIDAD, PÚBLICA O PRIVADA, AL MENOS DURANTE 5 AÑOS Y OBTENER LA CORRESPONDIENTE TARJETA DE IDENTIDAD PROFESIONAL, SUPERANDO LAS PRUEBAS CORRESPONDIENTES.", "OBTENCIÓN DE LA LICENCIA DE ARMAS CORRESPONDIENTES", "TENER EL TÍTULO DE GRADO UNIVERSITARIO QUE LE HABILITE...", "TODAS SON CORRECTAS"],
+    correct: 0,
+    lock: true
+  },
+  {
+    q: "101. ¿La habilitación de los directores de seguridad requerirá que los solicitantes cumplan:",
+    options: ["ESTAR EN POSESIÓN DE LA TITULACIÓN DE SEGURIDAD RECONOCIDA A ESTOS EFECTOS POR EL MINISTERIO DEL INTERIOR", "ACREDITAR EL DESEMPEÑO DURANTE CINCO AÑOS, COMO MÍNIMO , DE PUESTOS DE DIRECCIÓN O GESTIÓN DE SEGURIDAD PÚBLICA Y PRIVADA...", "LAS DOS SON NECESARIAS", "DEBEN CUMPLIR UNO DE LOS DOS REQUISITOS MENCIONADOS"],
+    correct: 3,
+    lock: true
+  },
+  {
+    q: "102. ¿donde aparece por primera vez nombrada la disposición de grabación de imágenes?",
+    options: ["LEY SEGURIDAD PRIVADA 92", "LEY SEGURIDAD PRIVADA DEL 2014", "EN AMBAS VIENE REFLEJADA", "EN NINGUNA DE LAS ANTERIORES"],
+    correct: 0,
+    lock: true
+  },
+  {
+    q: "103. ¿que ley es la ley orgánica 3/2018 de 5 de diciembre?",
+    options: ["RELATIVA A LAS FFCCSS", "PROTECCIÓN DE DATOS PERSONALES Y GARANTÍAS DE LOS DERECHOS DIGITALES", "LEY DEL PROCEDIMIENTO ADMINISTRATIVO COMÚN", "NINGUNA ES CORRECTA"],
+    correct: 1,
+    lock: true
+  },
+  {
+    q: "104. ¿cual es la función de la ley de protección de datos?",
+    options: ["GARANTIZAR Y PROTEGER... LOS DERECHOS FUNDAMENTALES DE LAS PERSONAS FÍSICAS Y DE SU HONOR E INTIMIDAD PERSONAL Y FAMILIAR.", "GARANTIZAR Y PROTEGER... Y NO PERSONALES...", "GARANTIZAR Y PROTEGER... ASÍ COMO GARANTIZAR LOS DERECHOS DIGITALES DE LA CIUDADANÍA CONFORME AL MANDATO DISPUESTO EN EL ARTÍCULO 18.4 CE.", "GARANTIZAR Y PROTEGER... CONFORME AL MANDATO DISPUESTO EN EL ARTÍCULO 18.2 CE."],
+    correct: 2
+  },
+  {
+    q: "105. ¿ cómo han de realizarse el tratamiento de los datos de carácter personal según el reglamento de la ue 2016/679 y la ley orgánica de protección de datos?",
+    options: ["NO ESPECIFICA UN CRITERIO CONCRETO...", "HAN DE REALIZARSE DE ACUERDO CON LOS PRINCIPIOS DE EXACTITUD DE DATOS, DEBER DE CONFIDENCIALIDAD, CONSENTIMIENTO, SEGURIDAD...", "ADEMÁS DE LO EXPUESTO EN LA OPCIÓN B, DEBEN DE CUMPLIR EL CRITERIO DE PROPORCIONALIDAD EN ARAS DEL CORRECTO FUNCIONAMIENTO", "A Y B SON CORRECTAS"],
+    correct: 2,
+    lock: true
+  },
+  {
+    q: "106. ¿que no se rige por la ley orgánica de protección de datos?",
+    options: ["LOS TRATAMIENTOS EXCLUIDOS... POR SU ART 2.2", "LOS TRATAMIENTOS DE DATOS DE PERSONAS FALLECIDAS", "LOS TRATAMIENTOS SOMETIDOS A LA NORMATIVA SOBRE PROTECCIÓN DE MATERIAS CLASIFICADAS", "TODAS SON CORRECTAS"],
+    correct: 3,
+    lock: true
+  },
+  {
+    q: "107. ¿cuando se pretenda o prevea crear ficheros de videovigilancia que deberá hacer?",
+    options: ["NOTIFICARLO PREVIAMENTE A LA AGENCIA ESPAÑOLA DE PROTECCIÓN DE DATOS, PARA SU INSCRIPCIÓN EN EL REGISTRO GENERAL DE LA MISMA", "NOTIFICARLO A LA AGENCIA ESPAÑOLA DE PROTECCIÓN DE DATOS", "NO HACE FALTA SU NOTIFICACIÓN YA QUE SE CONSIDERA QUE YA SE ENCUENTRA SUPEDITADO...", "INSCRIPCIÓN EN EL REGISTRO GENERAL... A TRAVÉS DEL CUERPO NACIONAL DE POLICÍA O DE LA GUARDIA CIVIL..."],
+    correct: 0
+  },
+  {
+    q: "108. ¿que regula la ley orgánica del 4 de agosto de 1997?",
+    options: ["VIDEOVIGILANCIA EN ESTABLECIMIENTOS PÚBLICOS", "SISTEMAS DE ALARMA EN VIVIENDAS...", "UTILIZACIÓN DE VIDEOCÁMARAS POR LAS FFCCS DEL ESTADO EN LUGARES PÚBLICOS", "TODAS SON CORRECTAS"],
+    correct: 2,
+    lock: true
+  },
+
+  // --- DOCUMENTO 2: Preguntas Exámenes Seguridad Privada ---
+  {
+    q: "1. (Doc 2) ¿Las empresas de seguridad privada pueden realizar labores de investigación privada?",
+    options: ["No, pero en la relación inicial del anteproyecto de Ley si que iban a concederles competencias al respecto.", "No, a no ser que se lo permita el grupo específico de CNP", "No, en ningún caso se puede plantear esa cuestión, como indica en art 10 de la Ley de Seguridad Privada."],
+    correct: 2
+  },
+  {
+    q: "2. (Doc 2) En referencia a las competencias en materia de armamento y munición a la Guardia Civil le compete:",
+    options: ["Autorización e inspección de armeros, tanto de armas como de munición.", "Expedición y control de los ejercicios de tiro.", "Todas correctas"],
+    correct: 2,
+    lock: true
+  },
+  {
+    q: "3. (Doc 2) Entre las cuestiones reseñables del preámbulo de la actual LSP, cuál de las siguientes no está contemplada:",
+    options: ["La necesidad de control de nuevas figuras asociadas al colectivo.", "Las relativas a la libre competencia.", "La equiparación de los distintos modelos policiales entre los países miembros de la UE."],
+    correct: 2
+  },
+  {
+    q: "4. (Doc 2) Los representantes de las empresas de seguridad privada... deberán cumplir con los siguientes requisitos: No haber sido separados del servicio en las Fuerzas Armadas o en las FFCCS... en...",
+    options: ["Los 2 años anteriores.", "Los 4 años anteriores.", "Los 3 años anteriores."],
+    correct: 0
+  },
+  {
+    q: "5. (Doc 2) El personal de sp es considerado agente de la autoridad:",
+    options: ["Por supuesto, tienen la misma categoría que los miembros de las FFCCS.", "Únicamente cuando desarrolle actividades de seguridad en cooperación y bajo el mando de las FFCCS.", "No, nunca, aunque es algo que se está trabajando."],
+    correct: 1,
+    lock: true
+  },
+  {
+    q: "6. (Doc 2) Según el art. 58.2 LSP, el personal que desempeñe funciones de sp... podrán incurrir en infracciones graves cuando:",
+    options: ["Realicen funciones de sp para terceros careciendo de la habilitación o acreditación necesaria.", "Lleven a cabo un trato incorrecto o desconsiderado con los ciudadanos.", "Se nieguen a realizar los cursos de formación permanente a los que vienen obligados."],
+    correct: 2
+  },
+  {
+    q: "7. (Doc 2) Con la normativa actual, como estaría considerada una instalación industrial que no pretenda conectarse a una central de alarmas o... centro de control?",
+    options: ["De grado 1", "De grado 2", "De grado 3"],
+    correct: 0
+  },
+  {
+    q: "8. (Doc 2) La utilización de aparatos o dispositivos de seguridad, sin ajustarse a las normas que los regulen o su funcionamiento con daños o molestias para terceros para un usuario... constituye...",
+    options: ["Infracción leve", "Infracción muy grave para usuarios obligados a disponer de ellos.", "Infracción grave"],
+    correct: 2
+  },
+  {
+    q: "9. (Doc 2) La verificación alarmas reales en las Centrales Receptoras de Alarmas (CRA), puede ser valorada de 4 maneras:",
+    options: ["Verificación policial, bidireccional, mediante vídeo y/o audio.", "Verificación secuencial, mediante vídeo, audio y/o personal.", "Verificación bidireccional, mediante vídeo, audio y/o personal."],
+    correct: 1
+  },
+  {
+    q: "10. (Doc 2) Para el correcto funcionamiento de las centrales de alarmas, deberán estar atendidas permanentemente por los operadores que resulten necesarios para la prestación de servicios:",
+    options: ["Deben ser siempre dos operadores por turno ordinario de trabajo.", "En un número adecuado y proporcional al número de conexiones que tengan contratadas.", "Todas son falsas."],
+    correct: 1,
+    lock: true
+  },
+  {
+    q: "11. (Doc 2) La modalidad de verificación de una alarma real mediante audio, exige:",
+    options: ["Al menos de una ventana de 10 minutos de tiempo previos al salto de la alarma", "Esa modalidad de verificación no existe", "Al menos de una ventana de 10 segundos de tiempo previos al salto de la alarma"],
+    correct: 2
+  },
+  {
+    q: "12. (Doc 2) Los escoltas privados, en el desempeño de sus funciones:",
+    options: ["Siempre podrán realizar labores de detención.", "Nunca podrán realizar labores de detención.", "Podrán realizar labores de detención cuando resulte imprescindible como consecuencia de una agresión a la persona que protege."],
+    correct: 2
+  },
+  {
+    q: "13. (Doc 2) La norma pionera de la videovigilancia destinada a fines particulares, referida a la prevención de la violencia en espectáculos deportivos, data del año:",
+    options: ["1999", "1998", "2008"],
+    correct: 1
+  },
+  {
+    q: "14. (Doc 2) Una de las funciones de los vigilantes de seguridad es:",
+    options: ["Llevar a cabo, en relación con el funcionamiento de CRA (centros receptores de alarmas), la prestación de verificación personal y respuesta de las señales de alarmas que se produzcan.", "El control del funcionamiento y mantenimiento de los sistemas de seguridad.", "Acompañamiento, defensa y protección de personas determinadas"],
+    correct: 0
+  },
+  {
+    q: "15. (Doc 2) Qué tipo de formación ha de recibir los operadores y demás personal dedicado al tratamiento de las señales de alarma que reciban las centrales receptoras?",
+    options: ["Formación técnica y específica", "Formación técnica y operativa específica", "No necesitan ningún tipo de formación específica"],
+    correct: 1
+  },
+  {
+    q: "16. (Doc 2) Indica cuál es la afirmación correcta:",
+    options: ["El jefe de seguridad es el responsable de la seguridad de una organización.", "El director de seguridad es el responsable de una empresa de seguridad.", "Todas las respuestas son falsas."],
+    correct: 2,
+    lock: true
+  },
+  {
+    q: "17. (Doc 2) Una de las funciones de los jefes de seguridad es:",
+    options: ["La identificación, análisis y evaluación de situaciones de riesgo...", "La responsabilidad sobre la custodia y el traslado de armas de titularidad de las empresas a las que pertenezca, de acuerdo con la normativa de armas...", "La interlocución y enlace con la Administración, especialmente con las FFCCS."],
+    correct: 1
+  },
+  {
+    q: "18. (Doc 2) La formación, actualización y especialización del personal de seguridad privada, deben realizarse...",
+    options: ["Por centros de formación habilitados y empresas que constituyan un centro de formación habilitado para personal que pertenezca o no a sus plantillas", "Por centros de formación habilitados y empresas... sólo dirigido a personal que pertenezca a sus plantillas", "Solo para centros habilitados"],
+    correct: 0
+  },
+  {
+    q: "19. (Doc 2) En cuanto al capítulo de competencias sancionadores en materia de sp, los órganos competentes para la imposición de faltas muy graves:",
+    options: ["Delegados y Subdelegados de Gobierno", "Ministro de Interior", "Ministro de Interior y Secretario de Estado de Seguridad"],
+    correct: 2
+  },
+  {
+    q: "20. (Doc 2) La acreditación de la aptitud psicofísica necesaria para la tenencia y uso de armas... está regulada por:",
+    options: ["Una Orden Ministerial de 1997", "Un Real Decreto de 1998", "Un Decreto de 1994"],
+    correct: 1
+  },
+  {
+    q: "21. (Doc 2) El Director General de la Policía tendrá la potestad sancionadora cuando:",
+    options: ["En el curso de las inspecciones por parte de la Guardia Civil de los cursos para guardas rurales...", "La anterior respuesta es falsa porque deben ser exclusivos", "Ambas respuestas son falsas, porque la competencia será de la [DG GC]."],
+    correct: 2,
+    lock: true
+  },
+  {
+    q: "22. (Doc 2) Cual es la principal norma española que tiene por objeto garantizar y proteger... tratamiento de los datos personales...",
+    options: ["LO 3/2018, de 5 de diciembre de Protección de Datos Personales y garantía de los derechos digitales", "LO 5/2018, de 3 de diciembre de Protección de Datos Personales y garantía de los derechos digitales", "Las respuestas anteriores son falsas."],
+    correct: 0,
+    lock: true
+  },
+
+  // --- DOCUMENTO 3: Convocatoria SEP 2020 ---
+  {
+    q: "1. (Doc 3) La verificación de alarmas reales en las CRA conlleva unos condicionantes... Seleccione la respuesta incorrecta:",
+    options: ["Confirmación de alarma acústica", "Confirmación de alarma presencial", "Confirmación de alarma bidireccional"],
+    correct: 0
+  },
+  {
+    q: "2. (Doc 3) La imposición de sanciones por infracciones muy graves en relación con los guardas rurales, son competencia de:",
+    options: ["Director General de la Guardia Civil", "Ninguno de ellos", "Delegados y Subdelegados de Gobierno"],
+    correct: 0,
+    lock: true
+  },
+  {
+    q: "3. (Doc 3) El personal de seguridad privada es considerado agente de la autoridad:",
+    options: ["Únicamente cuando desarrolle actividades de seguridad en cooperación y bajo el mando de las FFCCS", "Por supuesto, tienen la misma categoría que los miembros de las FFCCS.", "No, nunca..."],
+    correct: 0,
+    lock: true
+  },
+  {
+    q: "4. (Doc 3) Los representantes de las empresas de seguridad privada... deberán cumplir requisitos: No haber sido separados del servicio... en...",
+    options: ["los 4 años anteriores.", "los 3 años anteriores.", "los 2 años anteriores."],
+    correct: 2
+  },
+  {
+    q: "5. (Doc 3) En lo que respecta a las competencias exclusivas de la Guardia Civil en materia de inspecciones.",
+    options: ["No tiene competencias inspectoras sobre ninguno de los colectivos anteriormente mencionados", "Únicamente tiene competencias sobre Guardas Rurales", "Únicamente tiene competencias sobre Guardas Particulares de Campo"],
+    correct: 1
+  },
+  {
+    q: "6. (Doc 3) ¿En qué artículo de la Ley de Seguridad Privada se determina la protección jurídica de agente de la autoridad...?",
+    options: ["En el 31", "En 41", "En el 37"],
+    correct: 2
+  },
+  {
+    q: "7. (Doc 3) El asesoramiento y planificación en materia de seguridad como actividad lucrativa...",
+    options: ["Ha de realizarlo personal acreditado", "No es una actividad privativa de las empresas de seguridad", "Debe realizarlo una empresa de seguridad"],
+    correct: 1
+  },
+  {
+    q: "8. (Doc 3) En relación con la formación específica para determinados servicios...",
+    options: ["Tienen una carga lectiva distinta dependiendo del tipo de servicio", "No existe carga lectiva definida para ellos", "Deben tener, al menos 10 horas de carga lectiva presenciales"],
+    correct: 2
+  },
+  {
+    q: "9. (Doc 3) El personal denominado 'Operador de Seguridad'... está considerado como:",
+    options: ["Personal de seguridad privada", "Ninguna de las anteriores respuestas es correcta", "Personal acreditado"],
+    correct: 2,
+    lock: true
+  },
+  {
+    q: "10. (Doc 3) Una instalación industrial, que no pretenda conectarse a una central de alarmas... está considerada como una instalación.",
+    options: ["De grado 3", "De grado 1", "De grado 2"],
+    correct: 1
+  },
+  {
+    q: "11. (Doc 3) Los programas de formación... de qué año data la resolución mencionada?",
+    options: ["2008", "1999", "2012"],
+    correct: 2
+  },
+  {
+    q: "12. (Doc 3) El control de tránsito en zonas reservadas... en el interior de unas instalaciones.",
+    options: ["Es cuestión que queda fuera del ámbito de aplicación la Ley", "Solo puede realizarse mediante personal ajeno a seguridad privada", "Solo puede realizarse con personal de seguridad privada"],
+    correct: 2
+  },
+  {
+    q: "13. (Doc 3) ¿Quién es encargado de emitir certificación que garantice... para la contratación de servicios de sp en infraestructuras críticas?",
+    options: ["La Administración Pública", "El Grupo de Seguridad Privada", "Una entidad de certificación acreditada"],
+    correct: 2
+  },
+  {
+    q: "14. (Doc 3) El plazo de prescripción para las [infracciones] graves es de...",
+    options: ["1 año", "3 años.", "2 años"],
+    correct: 2
+  },
+  {
+    q: "15. (Doc 3) La norma que tuvo como principal objetivo el de dar cobertura en materia de armamento suficiente a los VS en los buques que navegan bajo bandera española...",
+    options: ["Una orden presidencial", "Un Real Decreto", "Una Orden presidencial"],
+    correct: 1
+  },
+  {
+    q: "16. (Doc 3) Según lo previsto en la normativa de Seguridad Privada, un usuario de estos servicios ¿podría resultar ser sancionado?",
+    options: ["No", "Sí", "Sí, siempre y cuando la contratación se realice mediante un Director o Jefe de Seguridad"],
+    correct: 1,
+    lock: true
+  },
+  {
+    q: "17. (Doc 3) En la normativa, los profesores de los centros de formación... están considerados como:",
+    options: ["Personal acreditado", "Como ninguno de ellos", "Personal de seguridad privada"],
+    correct: 0,
+    lock: true
+  },
+  {
+    q: "18. (Doc 3) ¿Cuál de las siguientes cuestiones son privativas de la seguridad Privada?",
+    options: ["La Seguridad de la Información y Comunicaciones", "El Asesoramiento y Planificación en materia de Seguridad", "Ninguna de las anteriores es privativa de la seguridad privada"],
+    correct: 2,
+    lock: true
+  },
+  {
+    q: "19. (Doc 3) Con anterioridad a la LSP, el colectivo de Detectives Privados... estaba regulado por:",
+    options: ["No tenian regulación alguna", "Su regulación estaba amparada por una Orden Ministerial", "Estaban regulados por un Real Decreto"],
+    correct: 1
+  },
+  {
+    q: "20. (Doc 3) El manejo de Circuitos Cerrados de Televisión (CCTV), está expresamente vetado al personal denominado como controlador o auxiliar, según una sentencia del tribunal..",
+    options: ["Por ninguno de ellos, es un criterio de la Secretaria General Técnica", "Constitucional", "Supremo"],
+    correct: 2,
+    lock: true
+  },
+  {
+    q: "21. (Doc 3) ¿Qué tipo de licencia de armas es la que porta el personal de seguridad privada?",
+    options: ["Tipo A", "Tipo C", "Tipo B"],
+    correct: 1
+  },
+  {
+    q: "22. (Doc 3) En la actualidad ¿cuál es la norma con mayor entidad jurídica en materia de Seguridad Privada?",
+    options: ["Ley Ordinaria", "Real Decreto", "Ley Orgánica"],
+    correct: 2
+  },
+  {
+    q: "23. (Doc 3) ¿Cuál de los siguientes servicios no requiere autorización previa por parte del órgano competente?",
+    options: ["La vigilancia en complejos o parques comerciales y de ocio que se encuentren delimitados", "La vigilancia y protección de los medios de transporte y de sus infraestructuras", "La vigilancia y protección en recintos y espacios abiertos que se encuentren delimitados"],
+    correct: 0
+  },
+  {
+    q: "24. (Doc 3) Una instalación considerada de grado 3, es una instalación considerada como de riesgo.",
+    options: ["De riesgo medio/alto", "De instalación critica", "De alto riesgo"],
+    correct: 0
+  },
+  {
+    q: "25. (Doc 3) Los detectives privados no podrán investigar delitos perseguibles de oficio...",
+    options: ["Verdadero", "Pueden investigar... siempre y cuando tenga autorización del Ministerio del Interior.", "Falso, los detectives privados siempre pueden investigar delitos perseguibles de oficio."],
+    correct: 0,
+    lock: true
+  },
+
+  // --- DOCUMENTO 4: Convocatoria FEB 2020 ---
+  {
+    q: "4. (Doc 4) ¿Las empresas de seguridad privada pueden realizar labores de investigación privada?",
+    options: ["No, pero en relación inicial del anteproyecto de ley, sí que iban competencias al respecto.", "No, a no ser que se lo permita el grupo específico del CNP", "No, en ningún caso, se puede plantear esa cuestión..."],
+    correct: 2
+  },
+  {
+    q: "5. (Doc 4) En referencia a las competencias relativas a armamento y munición que la Guardia Civil... ¿cuál es correcta?",
+    options: ["Autorización e inspección de armeros, tanto de armas como de munición", "Expedición y control de los ejercicios de tiro", "Todas las respuestas son verdaderas."],
+    correct: 2,
+    lock: true
+  },
+  {
+    q: "6. (Doc 4) Entre las cuestiones reseñables del preámbulo... cuál de las siguientes no está contemplada:",
+    options: ["La necesitad de control de muescas fingidas asociadas al colectivo", "Las relativas a la libre competencia", "La equiparación de los distintos modelos policiales entre los países miembros de la Unión Europea."],
+    correct: 2
+  },
+  {
+    q: "7. (Doc 4) Los representantes... requisitos: No haber sido separados del servicio... en...",
+    options: ["los 4 años anteriores.", "los 3 años anteriores.", "los 2 años anteriores."],
+    correct: 2
+  },
+  {
+    q: "8. (Doc 4) El personal de seguridad privada es considerado agente de la autoridad:",
+    options: ["Por supuesto, tienen la misma categoría que los miembros de las FFCCS.", "Únicamente cuando desarrolle actividades de seguridad en cooperación y bajo el mando de las FFCCS", "No, nunca..."],
+    correct: 1,
+    lock: true
+  },
+  {
+    q: "9. (Doc 4) Según el art 58.2... podrán incurrir en infracciones graves cuando:",
+    options: ["Realicen funciones de seguridad privada para terceros, careciendo de la habilitación necesaria", "Lleven a cabo un trato incorrecto o desconsiderado con los ciudadanos.", "Se nieguen a realizar los cursos de formación permanente a los que vienen obligados."],
+    correct: 2
+  },
+  {
+    q: "10. (Doc 4) Una instalación industrial, que no pretenda conectarse a una CRA... con la normativa actual está considerada como una instalación:",
+    options: ["De grado 2", "De grado 1", "De grado 3"],
+    correct: 1
+  },
+  {
+    q: "11. (Doc 4) La utilización de aparatos... sin ajustarse a las normas... constituye:",
+    options: ["Una infracción leve.", "Una infracción muy grave para usuarios, obligados a disponer de ellos.", "Una infracción grave."],
+    correct: 2
+  },
+  {
+    q: "13. (Doc 4) Para el correcto funcionamiento de las centrales de alarmas...",
+    options: ["Deben ser siempre dos operadores por turno ordinario de trabajo", "En un número adecuado y proporcional al número de conexiones que tengan contratadas.", "Todas las respuestas son falsas."],
+    correct: 1,
+    lock: true
+  },
+  {
+    q: "14. (Doc 4) La modalidad de verificación de una alarma real mediante audio, exige:",
+    options: ["Al menos de una ventana de 10 minutos de tiempo previos...", "Esa modalidad de verificación no existe.", "Al menos de una ventana de 10 segundos de tiempo previos al salto de la alarma."],
+    correct: 2
+  },
+  {
+    q: "15. (Doc 4) Los escoltas privados, en el desempeño de sus funciones:",
+    options: ["Siempre podrán realizar labores de detención.", "Nunca podrán realizar labores de detención.", "Podrán realizar labores de detención, cuando resulte imprescindible como consecuencia de una agresión a la persona que protege."],
+    correct: 2
+  },
+  {
+    q: "16. (Doc 4) La norma pionera de la videovigilancia destinada a fines particulares... data del año:",
+    options: ["1999.", "1998.", "2008."],
+    correct: 1
+  },
+  {
+    q: "17. (Doc 4) Una de las funciones de los vigilantes de seguridad es:",
+    options: ["llevar a cabo, en relación con el funcionamiento de la CRA la prestación de verificación personal y respuesta de las señales de alarmas que se produzcan", "El control del funcionamiento y mantenimiento de los sistemas de seguridad.", "Acompañamiento, defensa y protección de las personas determinadas..."],
+    correct: 0
+  },
+  {
+    q: "18. (Doc 4) ¿Qué tipo de formación de recibir los operadores... dedicado al tratamiento de las señales de alarmas?",
+    options: ["Formación técnica y específica.", "Formación técnica y operativa específica.", "No necesita ningún tipo de formación específica."],
+    correct: 1
+  },
+  {
+    q: "19. (Doc 4) Indica cuál es la afirmación correcta:",
+    options: ["El jefe de seguridad es el responsable de la seguridad de una organización.", "El director de seguridad es el responsable de una empresa de seguridad.", "Toda la respuestas son falsas."],
+    correct: 2,
+    lock: true
+  },
+  {
+    q: "20. (Doc 4) Una de las funciones de los jefes de seguridad es:",
+    options: ["La identificación, análisis y evaluación de situaciones de riesgo...", "La responsabilidad sobre la custodia y el traslado de armas...", "La interlocución y enlace con la administración, especialmente con las fuerzas y cuerpos de seguridad."],
+    correct: 2
+  },
+  {
+    q: "21. (Doc 4) La formación, actualización y especialización del personal de seguridad... señala la respuesta correcta:",
+    options: ["Por centros de formación habilitados y empresas que constituyan un centro de formación habilitado para el personal que pertenezcan o no a sus plantillas.", "Por centros de formación habilitados y empresas... solo dirigido a personas que pertenezca a sus plantillas.", "Solo por centros de formación habilitados."],
+    correct: 0
+  },
+  {
+    q: "22. (Doc 4) En cuanto al capítulo de competencias sancionadoras... órganos para la imposición de faltas muy graves:",
+    options: ["Delegados y subdelegados del gobierno.", "Ministro de interior.", "Ministro de interior y secretario de Estado de seguridad."],
+    correct: 2
+  },
+  {
+    q: "23. (Doc 4) La acreditación de la aptitud psicofísica necesaria para la tenencia y uso de armas... está regulada por:",
+    options: ["Una orden ministerial de 1997.", "Un Real decreto de 1998.", "Un decreto de 1994."],
+    correct: 1
+  },
+  {
+    q: "24. (Doc 4) El director general de la policía tendrá la potestad sancionadora cuando:",
+    options: ["El curso de las inspecciones por parte de la guardia civil de los cursos para guardas rurales...", "La respuesta anterior es falsa porque deben ser exclusivos.", "Ambas respuestas son falsas..."],
+    correct: 2,
+    lock: true
+  },
+  {
+    q: "25. (Doc 4) ¿Cuál es la principal norma española que tiene por objeto, garantizar y proteger los derechos fundamentales de las personas físicas y de su honor e intimidad...?",
+    options: ["La ley Orgánica 3/2018 de 5 de diciembre de Protección de Datos Personales y garantía de los derechos digitales.", "La ley Orgánica 5/2018 de 3 de diciembre...", "Las respuestas anteriores son falsas."],
+    correct: 0,
+    lock: true
+  },
+
+  // --- BLOQUE FINAL: PREGUNTAS ADICIONALES ---
+  {
+    q: "Los arts de redacción ambigua de la Ley 5/2014 de SP que necesitan delimitación por parte del Reglamento son:",
+    options: ["Art. 30 y Art 31.", "Art. 31: Protección jurídica del agente de la autoridad y Art 32: Vigilantes de seguridad y su especialidad.", "Art. 31 y Art 32."],
+    correct: 1
+  },
+  {
+    q: "Indica la correcta:",
+    options: ["La Ley y el Reglamento son las normas con mayor rango jurídico.", "El RD de 1998 regula la aptitud psicofísica.", "En el año 2010 se realizó una reforma considerable de la normativa que afecta a todo tipo de ámbito."],
+    correct: 2
+  },
+  {
+    q: "Anteriormente a la promulgación de la LSP del 92... se regulaba mediante:",
+    options: ["RD 882/81 y RD 627/78", "RD 880/81 y RD 629/78", "RD 881/80 y RD 628/79"],
+    correct: 1
+  },
+  {
+    q: "Indica la correcta:",
+    options: ["A los efectos de habilitación y formación, se considerarán los escoltas privados y los vigilantes de explosivos como especialidades de los vigilantes de seguridad.", "El personal de sp habrá de obtener habilitación de la GC.", "De la cartilla de tiro estarán exonerados los guardas particulares."],
+    correct: 0
+  },
+  {
+    q: "Respecto a los detectives privados:",
+    options: ["No pueden investigar delitos de oficio, debiendo denunciar en 48h.", "Se encargan de los servicios de investigación privada a los que se refiere el art 48 de la LSP.", "Todas las respuestas son falsas"],
+    correct: 1,
+    lock: true
+  },
+  {
+    q: "Indica la correcta:",
+    options: ["Los Grupos de Seguridad Privada tramitan los procedimientos sancionadores.", "El CNP es sobre el que, en menor medida, recaen las funciones de habilitación.", "Las materias en las cuales la GC tiene expresamente competencias... relativas al armamento y munición y a los Guardas Rurales."],
+    correct: 2
+  },
+  {
+    q: "En la Instrucción 1/2006 de la AEPD sobre tratamiento de datos se hace referencia:",
+    options: ["A las limitaciones de instalación de cámaras... como probadores, vestuarios o estancias susceptibles de ser catalogadas de uso íntimo.", "A la limitación del tiempo de conservación a 30 horas.", "Todas son verdaderas."],
+    correct: 0,
+    lock: true
+  },
+  {
+    q: "Indica la incorrecta:",
+    options: ["La capacidad de decisión de un Delegado de Gobierno es muy amplia.", "En el ámbito de la AGE, corresponderá a los delegados y subdelegados de Gobierno imponer las sanciones por infracciones leves.", "La sanción por infracciones en cursos para guardas rurales corresponderá al Director de la GC."],
+    correct: 1
+  },
+  {
+    q: "Indica la incorrecta:",
+    options: ["La LO 3/2018 garantiza los derechos fundamentales.", "La LO 3/2018 será de aplicación a tratamientos automatizados.", "Todas las respuestas son verdaderas"],
+    correct: 2,
+    lock: true
+  },
+  {
+    q: "Respecto al preámbulo de la LSP:",
+    options: ["La actividad produce nuevas figuras que no han de ser 'legalmente visibles'.", "Las cuestiones destacables son: la obsolescencia, la adecuación a la normativa nacional, al modelo europeo y la necesidad de control de nuevas figuras.", "Las cuestiones destacables son: adecuación a la normativa europea."],
+    correct: 1
+  },
+  {
+    q: "Indica la afirmación correcta:",
+    options: ["La transmisión de una alarma no confirmada que resulte verdadera podrá ser objeto de denuncia.", "La transmisión de una alarma no confirmada que resulte falsa podrá ser objeto de denuncia.", "La transmisión de una alarma confirmada, que resulte falsa, a las FFCS podrá ser objeto de denuncia para la imposición de la correspondiente sanción."],
+    correct: 2
+  },
+  {
+    q: "Según la Orden INT/318/2011, sobre personal de SP:",
+    options: ["Todas son verdaderas", "En el cumplimiento de su deber de colaboración, el personal de seguridad privada tendrá la consideración jurídica que otorgan las leyes a los que acuden en auxilio o colaboran con la autoridad o sus agentes.", "El personal de sp recibirá un trato preferente y deferente."],
+    correct: 1,
+    lock: true
+  },
+  {
+    q: "Indica la afirmación correcta:",
+    options: ["Todas son falsas.", "A la introducción de la verificación de alarmas por audio se le concede igual validez normativa que a la presencial.", "La equiparación de audio y video ha fomentado mayor venta con mayor coste."],
+    correct: 1,
+    lock: true
+  },
+  {
+    q: "Los servicios de sp forman parte de la competencia exclusiva... atribuida al Estado por el artículo de la CE:",
+    options: ["149.2", "149.3", "149.1"],
+    correct: 2
+  },
+  {
+    q: "A los jefes de seguridad les corresponde:",
+    options: ["La organización, dirección e inspección del personal y servicios de sp.", "La validación provisional de las medidas de seguridad.", "La identificación, análisis y evaluación de riesgos."],
+    correct: 0
+  },
+  {
+    q: "La norma establece lo que va a ser considerado como alarma real o falsa alarma. Su verificación se valora de diferentes maneras:",
+    options: ["Verificación vídeo (art. 7), secuencial (art. 8).", "Verificación personal (art. 10), verificación mediante vídeo (art. 8), verificación por audio (art. 9) y verificación secuencial (art. 7)", "Verificación por audio (art. 7), vídeo (art. 8)."],
+    correct: 1
+  },
+  {
+    q: "La actividad de seguridad privada se trata de servicios:",
+    options: ["Únicamente subordinados.", "Complementarios y subordinados respecto a los de seguridad pública", "Únicamente complementarios."],
+    correct: 1
+  },
+  {
+    q: "En verificación de alarmas por audio:",
+    options: ["Grabación de 9 segundos previos.", "Utiliza el sonido para discriminar las señales reales de las falsas, contando con la grabación de 10 segundos de tiempo previos al salto de alarma", "Grabación de 8 segundos previos."],
+    correct: 1
+  },
+  {
+    q: "Uno de los arts más novedosos de la LSP 5/2014 es el art 40 relacionado con los servicios de las armas de fuego en el que se indica:",
+    options: ["Se podrá portar armas en buques con bandera europea.", "Las armas de fuego adecuadas para realizar cada tipo de servicio serán las que reglamentariamente se establezcan.", "Podrá autorizarse la prestación de verificación personal portando armas en todas las situaciones."],
+    correct: 1
+  },
+  {
+    q: "En el ámbito de la AGE, la potestad sancionadora corresponderá:",
+    options: ["Todas las respuestas son falsas.", "Al Director General de la Policía imponer sanciones de extinción.", "Al Ministerio del Interior imponer las sanciones por infracciones graves"],
+    correct: 2,
+    lock: true
+  },
+  {
+    q: "A los directores de seguridad no les corresponde:",
+    options: ["La organización y dirección de servicios.", "El análisis de riesgos.", "La comunicación a las FFCCS competentes de las circunstancias o informaciones relevantes para la seguridad ciudadana."],
+    correct: 2
+  },
+  {
+    q: "Según la Orden INT/318/2011, sobre personal de SP:",
+    options: ["La defensa reglamentaria de los vigilantes de seguridad será de color negro, de goma semirrígida y de 50 cm de longitud; y los grilletes serán de los denominados de manilla (art. 26.1)", "La empresa podrá autorizar otros elementos defensivos (art. 26.4).", "No existe la posibilidad de utilizar otro tipo de uniformidad."],
+    correct: 0
+  },
+  {
+    q: "El personal de SP habrá de reunir, para su habilitación, unos requisitos adicionales... Indica la respuesta correcta:",
+    options: ["Todas son verdaderas", "Los vigilantes y guardas no deben haber cumplido los 55 años.", "Los vigilantes de seguridad y guardas particulares del campo deben estar en posesión del titulo de Graduado en Bachiller, de Técnico Superior, u otros equivalentes..."],
+    correct: 2,
+    lock: true
+  }
+];
+
+function shuffle(array){
+  const a = array.slice();
+  for(let i=a.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]] = [a[j],a[i]];
+  }
+  return a;
+}
+
+// Construir preguntas (barajando preguntas y, salvo lock:true, también opciones)
+function buildQuestionsFrom(rawArray){
+  return shuffle(rawArray).map(q => {
+    if (q.lock) {
+      return {
+        q: q.q,
+        options: q.options.slice(),
+        correct: q.correct,
+        answer: null,
+        lock: true
+      };
+    } else {
+      const idxs = shuffle([0,1,2,3]);
+      const newOptions = idxs.map(i => q.options[i]);
+      const newCorrect = idxs.indexOf(q.correct);
+      return {
+        q: q.q,
+        options: newOptions,
+        correct: newCorrect,
+        answer: null,
+        lock: false
+      };
+    }
+  });
+}
+
+// Estado inicial
+let questions = buildQuestionsFrom(RAW);
+
+let current = 0;
+let correctCount = 0;
+let wrongCount = 0;
+let penaltyCount = 0;
+let failStreak = 0;
+let testFinished = false;
+
+const qTextEl = document.getElementById("qText");
+const qNumberEl = document.getElementById("qNumber");
+const optionsBox = document.getElementById("optionsBox");
+const statCorrectEl = document.getElementById("statCorrect");
+const statWrongEl = document.getElementById("statWrong");
+const statPenaltyEl = document.getElementById("statPenalty");
+const statIndexEl = document.getElementById("statIndex");
+const feedbackEl = document.getElementById("feedback");
+const prevBtn = document.getElementById("prevBtn");
+const nextBtn = document.getElementById("nextBtn");
+const retryWrongBtn = document.getElementById("retryWrongBtn");
+const shuffleBtn = document.getElementById("shuffleBtn");
+const cardEl = document.getElementById("card");
+const finalBox = document.getElementById("finalBox");
+
+function allAnswered(){
+  return questions.every(q => q.answer !== null);
+}
+
+function renderQuestion(){
+  const q = questions[current];
+  qNumberEl.textContent = "Pregunta " + (current+1);
+  qTextEl.textContent = q.q;
+  statIndexEl.textContent = (current+1) + " / " + questions.length;
+  optionsBox.innerHTML = "";
+  const keys = ["A","B","C","D"];
+
+  q.options.forEach((opt,idx)=>{
+    const btn = document.createElement("button");
+    btn.className = "btn-option";
+    btn.dataset.index = idx;
+    btn.innerHTML = `<span class="key">${keys[idx]}</span><span class="label">${opt}</span>`;
+    if(q.answer !== null){
+      btn.classList.add("disabled");
+      if(idx === q.correct) btn.classList.add("correct");
+      if(idx === q.answer && q.answer !== q.correct) btn.classList.add("wrong");
+    }
+    btn.addEventListener("click", ()=> handleAnswer(idx));
+    optionsBox.appendChild(btn);
+  });
+
+  prevBtn.disabled = current === 0;
+  nextBtn.disabled = current === questions.length-1;
+  feedbackEl.textContent = q.answer === null ?
+    "Elige una opción. Cada 3 fallos se resta 1 acierto." :
+    (q.answer === q.correct ? "Respuesta ya contestada: correcta." : "Respuesta ya contestada: incorrecta.");
+  feedbackEl.className = "neutral";
+}
+
+function triggerExplosion(){
+  const ex = document.createElement("div");
+  ex.className = "explosion";
+
+  const core = document.createElement("div");
+  core.className = "explosion-core";
+  const label = document.createElement("div");
+  label.className = "explosion-label";
+  label.textContent = "💥 ¡BOOM!";
+  core.appendChild(label);
+  ex.appendChild(core);
+
+  // trocitos que saltan alrededor
+  const pieces = 16;
+  for(let i=0;i<pieces;i++){
+    const piece = document.createElement("div");
+    piece.className = "explosion-piece";
+    const angle = Math.random()*2*Math.PI;
+    const dist = 80 + Math.random()*80;
+    const dx = Math.cos(angle)*dist;
+    const dy = Math.sin(angle)*dist;
+    piece.style.setProperty("--dx", dx + "px");
+    piece.style.setProperty("--dy", dy + "px");
+    ex.appendChild(piece);
+  }
+
+  cardEl.appendChild(ex);
+  setTimeout(()=> {
+    if (ex.parentNode) ex.parentNode.removeChild(ex);
+  }, 800);
+}
+
+function triggerConfetti(){
+  const container = document.createElement("div");
+  container.className = "confetti-container";
+  const emojis = ["🥳","🎉","🎊","🎈","🎉","🥳","🎊"];
+  const pieces = 48;
+  for(let i=0;i<pieces;i++){
+    const span = document.createElement("span");
+    span.className = "confetti-emoji";
+    span.textContent = emojis[Math.floor(Math.random()*emojis.length)];
+    span.style.left = Math.random()*100 + "%";
+    span.style.fontSize = (18 + Math.random()*10) + "px";
+    span.style.animationDelay = (Math.random()*0.7) + "s";
+    container.appendChild(span);
+  }
+  cardEl.appendChild(container);
+  setTimeout(()=>{
+    if (container.parentNode) container.parentNode.removeChild(container);
+  }, 2600);
+}
+
+function maybeFinishTest(){
+  if (!testFinished && allAnswered()){
+    testFinished = true;
+    showResult();
+  }
+}
+
+function handleAnswer(idx){
+  const q = questions[current];
+  if(q.answer !== null) return;
+
+  q.answer = idx;
+
+  const btns = optionsBox.querySelectorAll(".btn-option");
+  btns.forEach(b=>{
+    b.classList.add("disabled");
+    const i = parseInt(b.dataset.index,10);
+    if(i === q.correct) b.classList.add("correct");
+    if(i === idx && idx !== q.correct) b.classList.add("wrong");
+  });
+
+  if(idx === q.correct){
+    correctCount++;
+    failStreak = 0;
+    statCorrectEl.textContent = correctCount;
+    feedbackEl.textContent = "✅ ¡Correcto!";
+    feedbackEl.className = "ok";
+    pulseCard(true);
+    triggerConfetti();
+  }else{
+    wrongCount++;
+    failStreak++;
+    statWrongEl.textContent = wrongCount;
+    let msg = "❌ Incorrecto.";
+    if(failStreak >= 3 && correctCount > 0){
+      correctCount--;
+      penaltyCount++;
+      failStreak = 0;
+      statCorrectEl.textContent = correctCount;
+      statPenaltyEl.textContent = penaltyCount;
+      msg += " Has acumulado 3 fallos: se resta 1 acierto.";
+    }else{
+      const remain = 3 - failStreak;
+      msg += " Cuando acumules " + remain + " fallo(s) más se restará 1 acierto.";
+    }
+    feedbackEl.textContent = msg;
+    feedbackEl.className = "bad";
+    pulseCard(false);
+    triggerExplosion();
+  }
+
+  maybeFinishTest();
+}
+
+function pulseCard(ok){
+  const cls = ok ? "flash-correct" : "flash-wrong shake";
+  cardEl.classList.add(...cls.split(" "));
+  setTimeout(()=> {
+    cardEl.classList.remove("flash-correct","flash-wrong","shake");
+  }, 500);
+}
+
+prevBtn.addEventListener("click", ()=>{
+  if(current>0){
+    current--;
+    renderQuestion();
+  }
+});
+nextBtn.addEventListener("click", ()=>{
+  if(current<questions.length-1){
+    current++;
+    renderQuestion();
+  }
+});
+
+// Resultado final (se muestra automáticamente al completar todas las preguntas)
+function showResult(){
+  const total = questions.length;
+  const answered = questions.filter(q=>q.answer!==null).length;
+  const score = correctCount - penaltyCount;
+  const pct = total>0 ? Math.round((score/total)*100) : 0;
+
+  let txt = "";
+  txt += "<strong>Resultado final:</strong><br>";
+  txt += "Preguntas respondidas: " + answered + " de " + total + "<br>";
+  txt += "Aciertos netos: " + correctCount + "<br>";
+  txt += "Fallos: " + wrongCount + "<br>";
+  txt += "Penalizaciones aplicadas (cada 3 fallos): " + penaltyCount + "<br>";
+  txt += "Puntuación (aciertos - penalizaciones): <strong>" + score + "</strong> (" + pct + "% aproximado).<br>";
+  txt += "Recuerda contrastar siempre con temario, jurisprudencia y normativa oficial.";
+
+  finalBox.innerHTML = txt;
+}
+
+// Reiniciar test solo con las preguntas falladas
+function restartWithWrong(){
+  if(!allAnswered()){
+    finalBox.innerHTML = "<strong>Para repetir solo los errores, primero contesta todas las preguntas.</strong>";
+    window.scrollTo({top:0,behavior:"smooth"});
+    return;
+  }
+
+  const wrongQs = questions.filter(q => q.answer !== null && q.answer !== q.correct);
+
+  if(wrongQs.length === 0){
+    finalBox.innerHTML = "<strong>No tienes preguntas falladas para repetir.</strong>";
+    window.scrollTo({top:0,behavior:"smooth"});
+    return;
+  }
+
+  const base = wrongQs.map(q => ({
+    q: q.q,
+    options: q.options.slice(),
+    correct: q.correct,
+    lock: q.lock
+  }));
+
+  questions = buildQuestionsFrom(base);
+  current = 0;
+  correctCount = 0;
+  wrongCount = 0;
+  penaltyCount = 0;
+  failStreak = 0;
+  testFinished = false;
+  statCorrectEl.textContent = "0";
+  statWrongEl.textContent = "0";
+  statPenaltyEl.textContent = "0";
+  finalBox.innerHTML = "<strong>Nuevo test iniciado solo con las preguntas que fallaste.</strong>";
+  renderQuestion();
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+
+function restartAll(){
+  questions = buildQuestionsFrom(RAW);
+  current = 0;
+  correctCount = 0;
+  wrongCount = 0;
+  penaltyCount = 0;
+  failStreak = 0;
+  testFinished = false;
+  statCorrectEl.textContent = "0";
+  statWrongEl.textContent = "0";
+  statPenaltyEl.textContent = "0";
+  finalBox.innerHTML = "<strong>Nuevo test iniciado con todas las preguntas barajadas.</strong>";
+  renderQuestion();
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+
+retryWrongBtn.addEventListener("click", restartWithWrong);
+shuffleBtn.addEventListener("click", restartAll);
+
+// Inicio
+document.getElementById("startBtn").addEventListener("click", ()=>{
+  document.getElementById("startOverlay").style.display = "none";
+  renderQuestion();
+});
+</script>
+</body>
+</html>
