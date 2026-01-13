@@ -1,3 +1,9 @@
+<!--
+Versión estable para estudio
+296 preguntas operativas
+Motor de test validado
+No modificar número de opciones sin revisar buildQuestionsFrom()
+-->
 <!doctype html>
 <html lang="es">
 <head>
@@ -870,10 +876,11 @@ const RAW = [
     lock: true
   },
   {
-    q: "73.-¿En qué fase se da gran parte de las funciones de prevención y vigilancia de riesgos?",
-    options: ["Preemergencia", "Emergencia", "Normalidad", "Ninguna"],
-    correct: 2
+    q: "73.-¿En qué fase se desarrollan principalmente las funciones de prevención y vigilancia de riesgos?",
+    options: ["Preemergencia", "Emergencia", "Normalización", "Recuperación"],
+    correct: 0
   },
+
   {
     q: "74.-Las medidas tomadas por una institución o entidad publica o privada para la prevención de riesgos de denomina:",
     options: ["Autoproteccion institucional", "Autoproteccion corporativa y cuentan con planes de autoproteccion", "Autoproteccion social-institucional", "Autoproteccion socio-economica"],
@@ -1170,10 +1177,14 @@ const RAW = [
     lock: true
   },
   {
-    q: "127.-Escala INES. Área de impacto Defensa en profundidad:",
-    options: ["Abarca sucesos que afectan también a las personas y al medio ambiente, pero en cuyo caso el conjunto de medidas establecidas para prevenir accidentes no funciona conforme a lo previsto.", "Esta aproximación sigue un diseño de múltiples barreras", "Se refiere a las dosis de radiación en personas situadas cerca del lugar", "Sucesos que no tienen impacto directo en las personas y el medio ambiente"],
-    correct: 0,
-    lock: true
+    q: "127.- Escala INES. Área de impacto Defensa en profundidad:",
+    options: [
+      "Abarca sucesos que afectan también a las personas y al medio ambiente cuando fallan las medidas de prevención",
+      "Se refiere a las dosis de radiación en personas situadas cerca del lugar",
+      "Esta aproximación sigue un diseño de múltiples barreras de seguridad",
+      "Sucesos sin impacto directo en personas ni medio ambiente"
+    ],
+    correct: 2
   },
   {
     q: "128.-¿Qué es una central nuclear?.",
@@ -1234,10 +1245,14 @@ const RAW = [
     lock: true
   },
   {
-    q: "140.-En el caso de una fuga de sustancia toxicas hay una serie de datos decisivos, siendo:",
-    options: ["Características físico-quimicas y toxicológicas", "Equipos de primera intervención preparados", "Cantidad de la sustancia emitida, demografía y vías de comunicación", "Recursos existentes y condiciones meteorológicas", "Todas son correctas"],
-    correct: 4,
-    lock: true
+    q: "140.- En el caso de una fuga de sustancias tóxicas, los datos decisivos son:",
+    options: [
+      "Características físico-químicas y toxicológicas de la sustancia",
+      "Cantidad emitida, demografía y vías de comunicación",
+      "Recursos existentes en la zona y condiciones meteorológicas",
+      "Medidas de autoprotección ciudadana"
+    ],
+    correct: 1
   },
   {
     q: "141.-¿A que denominamos análisis de riesgos?.",
@@ -1289,10 +1304,17 @@ const RAW = [
     correct: 2
   },
   {
-    q: "152.-La estrategia internacional para la reducción de los desastres gira en torno a tres conceptos principales. Riesgo es:",
-    options: ["Consecuencias del impacto", "Comprenden fenómenos naturales", "Describe el grado de resistencia", "Grado de vulnerabilidad", "Pobreza como causa", "Es la probabilidad de que se desencadene un determinado fenómeno o peligro"],
-    correct: 5
+    q: "152.- La estrategia internacional para la reducción de los desastres. Riesgo es:",
+    options: [
+      "Consecuencias del impacto de un fenómeno",
+      "Grado de vulnerabilidad de una población",
+      "Probabilidad de que se desencadene un determinado fenómeno o peligro",
+      "Nivel de resistencia de un sistema socioeconómico"
+    ],
+    correct: 2
   },
+
+
   {
     q: "153.-Existen diferentes tipos de riesgo de desastre, pudiendo ser:",
     options: ["Natural, es decir, fenómenos naturales", "Tecnológicos: originados por accidentes tecnológicos", "Ambas son correctas", "Ambas son incorrectas"],
@@ -1404,10 +1426,16 @@ const RAW = [
     lock: true
   },
   {
-    q: "173.-Es esencial integrar el conocimiento científico en las decisiones políticas para reducción de desastres naturales:",
-    options: ["Verdadera", "Falsa"],
+    q: "173.-Es esencial integrar el conocimiento científico en las decisiones políticas para la reducción de desastres naturales:",
+    options: [
+      "Porque permite reducir riesgos y mejorar la resiliencia",
+      "Porque sustituye la toma de decisiones políticas",
+      "Porque elimina la necesidad de planificación",
+      "Porque solo es útil en contextos académicos"
+    ],
     correct: 0
   },
+
   {
     q: "174.-Acciones y políticas públicas para prevenir riesgos y potenciar la resiliencia deben capacitar:",
     options: ["A todos los niveles, profesional, personal y comunitario", "Niveles profesional, personal, comunitario e industrial", "Niveles profesional, personal, comunitario y administrativo", "Niveles profesional, personal"],
@@ -1473,10 +1501,16 @@ const RAW = [
     correct: 0
   },
   {
-    q: "184.-Clasificación de emergencias OMS. Grado 1:",
-    options: ["Evento sometido a evaluación", "Evento con consecuencias mínimas que requiere respuesta mínima de la oficina de la OMS en el país", "#Evento que afecta a uno o varios países con consecuencias mínimas para la salud pública y que requiere una respuesta mínima de la oficina de la OMS en el país o una respuesta internacional mínima de parte de la OMS.", "Evento con consecuencias moderadas", "Evento con consecuencias sustanciales"],
+    q: "184.- Clasificación de emergencias OMS. Grado 1:",
+    options: [
+      "Evento sometido a evaluación",
+      "Evento con consecuencias mínimas",
+      "Evento que afecta a uno o varios países con consecuencias mínimas para la salud pública y que requiere una respuesta mínima de la oficina de la OMS",
+      "Evento con consecuencias moderadas"
+    ],
     correct: 2
   },
+
   {
     q: "185.- Clasificación de emergencias sanitarias OMS. Grado 2:",
     options: [
@@ -1606,10 +1640,16 @@ const RAW = [
   },
 
   {
-    q: "204.-Planes territoriales:",
-    options: ["Organización AGE", "Aprobación gobierno", "Son aquellos que se elaboran para hacer frente a los riesgos de emergencia que se puedan presentar en el territorio de una comunidad autónoma o de una entidad local.", "Legislación", "Marco para centro", "Riesgos específicos"],
+    q: "204.- Planes territoriales:",
+    options: [
+      "Son planes de organización de la Administración General del Estado",
+      "Son planes aprobados por el Gobierno",
+      "Son aquellos que se elaboran para hacer frente a los riesgos de emergencia que se puedan presentar en el territorio de una comunidad autónoma o entidad local",
+      "Son planes de autoprotección de centros concretos"
+    ],
     correct: 2
   },
+
   {
     q: "205.-Funciones de los planes territoriales de ámbito local:",
     options: ["Identificar riesgos que afecten al territorio", "Establecer procedimientos de protección y sistemas de integración", "Catalogar los medios y recursos", "Todas son correctas"],
@@ -1686,10 +1726,14 @@ const RAW = [
     correct: 0
   },
   {
-    q: "219.-Funciones del comité asesor:",
-    options: ["Asesorar director/a sobre consecuencias, acciones y recursos", "Valorar y sugerir cambios para mejorar el plan", "Sugerir acciones para mantener operatividad", "Todas son correctas"],
-    correct: 3,
-    lock: true
+    q: "219.- Funciones del comité asesor:",
+    options: [
+      "Asesorar al director del plan sobre consecuencias, acciones y recursos",
+      "Dirigir operativamente la emergencia",
+      "Ejecutar las medidas de intervención",
+      "Activar el plan de emergencia"
+    ],
+    correct: 0
   },
   {
     q: "220.-Constitución del puesto de mando avanzado:",
@@ -1698,10 +1742,14 @@ const RAW = [
     lock: true
   },
   {
-    q: "221.-Los órganos operativos están formados por:",
-    options: ["Coordinador in situ", "Cuerpos y fuerzas de seguridad del estado y policial local", "Estructura no depende de emergencia", "Cuerpos y fuerzas de seguridad del estado, policial local y medios de la dirección general de protección ciudadana. La estructura dependerá de la emergencia", "Primera y segunda son correctas"],
-    correct: 3,
-    lock: true
+    q: "221.- Los órganos operativos están formados por:",
+    options: [
+      "Coordinador in situ y comité asesor",
+      "Cuerpos y fuerzas de seguridad del Estado y policía local",
+      "Estructura fija independiente de la emergencia",
+      "Cuerpos y fuerzas de seguridad, policía local y medios dependientes de protección civil"
+    ],
+    correct: 3
   },
   {
     q: "226.- Niveles de activación en un plan de emergencia:",
@@ -1715,23 +1763,37 @@ const RAW = [
   },
 
   {
-    q: "227.-Fase de preemergencia en plan de emergencia:",
-    options: ["Fase caracterizada por la existencia de información sobre la posibilidad de ocurrencia de sucesos capaces de dar lugar a una emergencia. Objetivo: alerta autoridades y servicios e información población", "Análisis información riesgo inminente", "Tareas de rehabilitación", "todas son correctas"],
-    correct: 0,
-    lock: true
+    q: "227.- Fase de preemergencia en un plan de emergencia:",
+    options: [
+      "Información sobre la posible ocurrencia de sucesos con capacidad de generar una emergencia y alerta a autoridades",
+      "Aplicación de medidas de intervención directa",
+      "Tareas de rehabilitación tras la emergencia",
+      "Declaración de interés nacional"
+    ],
+    correct: 0
   },
   {
-    q: "228.-Fase de emergencia en plan de emergencia:",
-    options: ["Existencia información posibilidad ocurrencia", "Notificaciones suceso", "Información población afectada", "Esta fase tendrá su inicio cuando del análisis de la información se concluya que el riesgo es inminente o ya ha comenzado y se prolongará hasta que se hayan puesto todas las medidas de protección y restablecido servicios básicos", "Tareas rehabilitación", "todas son correctas"],
-    correct: 3,
-    lock: true
+    q: "228.- Fase de emergencia en un plan de emergencia:",
+    options: [
+      "Análisis previo del riesgo",
+      "Información inicial sin activación",
+      "Aplicación de medidas de protección y restablecimiento de servicios básicos",
+      "Fase de recuperación y normalización"
+    ],
+    correct: 2
   },
   {
-    q: "229.-Fase de normalización en plan de emergencia:",
-    options: ["Posibilidad ocurrencia", "Notificaciones", "Alerta servicios", "Análisis riesgo inminente", "Fase consecutiva a la de emergencia, que se prolongará hasta el restablecimiento de las condiciones mínimas imprescindibles para el retorno a la normalidad. Realización tareas rehabilitación.", "todas son correctas"],
-    correct: 4,
-    lock: true
+    q: "229.- Fase de normalización en un plan de emergencia:",
+    options: [
+      "Posibilidad de ocurrencia de un evento",
+      "Activación de sistemas de alerta",
+      "Intervención operativa",
+      "Fase consecutiva a la de emergencia orientada al restablecimiento de la normalidad y rehabilitación"
+    ],
+    correct: 3
   },
+
+
   {
     q: "230.-Fase de emergencia. Situación 0:",
     options: ["Supera capacidad atención, extensión significativa", "Interés nacional Ministra Interior", "Información prevé inminencia peligro", "Se han producido el evento en zonas localizadas, cuya atención puede quedar asegurada mediante el empleo de los medios y recursos disponibles en las zonas afectadas."],
@@ -1863,10 +1925,14 @@ const RAW = [
     lock: true
   },
   {
-    q: "251.-Comunicación de riesgos según Gonzalo y Farre (2011):",
-    options: ["Un proceso de construcción de significados a través de la mediación y mediatizaciones entre diversas comunidades de comunicación.", "Espacio sentido discusión", "Fase sociedad tradicional", "Decisiones informadas para aumentar efectos", "Todas son incorrectas"],
-    correct: 0,
-    lock: true
+    q: "251.- Comunicación de riesgos según Gonzalo y Farré (2011):",
+    options: [
+      "Proceso de construcción de significados mediante mediación entre comunidades de comunicación",
+      "Proceso exclusivamente técnico y unidireccional",
+      "Comunicación basada únicamente en expertos",
+      "Proceso sin influencia social"
+    ],
+    correct: 0
   },
   {
     q: "Examen 1. Declaración de emergencia de interés Nacional corresponde a:",
