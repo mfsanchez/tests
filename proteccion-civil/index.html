@@ -1421,8 +1421,8 @@ const RAW = [
   },
   {
     q: "176.-Estrategias nucleares de salud pública:",
-    options: ["Vigilancia de salud pública", "Protección de la salud", "Promoción de la salud", "Prevención", "Todas son correctas"],
-    correct: 4,
+    options: ["Vigilancia de salud pública", "Protección de la salud", "Promoción de la salud", "Todas son correctas"],
+    correct: 3,
     lock: true
   },
   {
@@ -1478,15 +1478,27 @@ const RAW = [
     correct: 2
   },
   {
-    q: "185.-Clasificación de emergencias OMS. Grado 2:",
-    options: ["Evento sometido a evaluación", "Evento con consecuencias mínimas", "Respuesta mínima", "Respuesta coordinada punto focal", "Evento que afecta a uno o varios países con consecuencias moderadas para la salud pública y que requiere una respuesta moderada de la oficina de la OMS en el país o una respuesta internacional moderada de parte de la OMS.", "Evento sustancial"],
-    correct: 4
+    q: "185.- Clasificación de emergencias sanitarias OMS. Grado 2:",
+    options: [
+      "Respuesta moderada",
+      "Respuesta mínima",
+      "Respuesta sustancial / emergencia grave",
+      "Evento sometido a evaluación y seguimiento"
+    ],
+    correct: 0
   },
+
   {
-    q: "186.-Clasificación de emergencias OMS. Grado 3:",
-    options: ["Evaluación", "Consecuencias mínimas", "Respuesta mínima", "Punto focal", "Consecuencias moderadas", "Respuesta moderada", "Equipo apoyo emergencias", "Consecuencias sustanciales", "Respuesta sustancial", "Evento que afecta a uno o varios países con consecuencias sustanciales para la salud pública y que requiere una respuesta sustancial de la oficina de la oms en el país o una respuesta internacional sustancial de parte de la oms."],
-    correct: 9
+    q: "186.- Clasificación de emergencias OMS. Grado 3:",
+    options: [
+      "Respuesta mínima",
+      "Respuesta moderada",
+      "Evaluación y seguimiento",
+      "Respuesta sustancial"
+    ],
+    correct: 3
   },
+
   {
     q: "187.-Documento que describe proceso interno clasificación, funciones y compromisos de la OMS:",
     options: ["Documento universal sanitario", "Documento básico humanitario", "Marco de respuestas a emergencias", "Marco universal de respuestas a emergencias"],
@@ -1572,15 +1584,27 @@ const RAW = [
     correct: 0
   },
   {
-    q: "202.-Planes especiales:",
-    options: ["Organización AGE", "Aprobación gobierno", "Emergencias territoriales CCAA", "Legislación específica", "Marco para centro", "Se elaboran para hacer frente a los riesgos específicos cuya naturaleza requiera una metodología técnico-científica adecuada para cada uno de ellos, como por ejemplo, inundaciones, terremotos, maremotos, fenómenos meteorológicos adversos"],
-    correct: 5
+    q: "202.- Planes especiales:",
+    options: [
+      "Son planes de organización de la Administración General del Estado",
+      "Son planes de emergencia territorial de las Comunidades Autónomas",
+      "Son el marco orgánico y funcional para centros o instalaciones concretas",
+      "Se elaboran para hacer frente a riesgos específicos cuya naturaleza requiera una metodología técnico-científica adecuada"
+    ],
+    correct: 3
   },
+
   {
-    q: "203.-Planes de autoprotección:",
-    options: ["Apoyo a otras administraciones", "Aprobación gobierno", "Frente a riesgos de CCAA", "Legislación", "Es el documento en el que se establece el marco orgánico y funcional previsto para un centro, establecimiento, espacio, instalación o dependencia, con el objeto de prevenir y controlar los riesgos sobre las personas y los bienes", "Riesgos específicos"],
-    correct: 4
+    q: "203.- Planes de autoprotección:",
+    options: [
+      "Son planes de apoyo a otras Administraciones Públicas",
+      "Son planes aprobados por el Gobierno",
+      "Son planes frente a riesgos específicos de ámbito autonómico",
+      "Es el documento en el que se establece el marco orgánico y funcional previsto para un centro"
+    ],
+    correct: 3
   },
+
   {
     q: "204.-Planes territoriales:",
     options: ["Organización AGE", "Aprobación gobierno", "Son aquellos que se elaboran para hacer frente a los riesgos de emergencia que se puedan presentar en el territorio de una comunidad autónoma o de una entidad local.", "Legislación", "Marco para centro", "Riesgos específicos"],
@@ -1680,10 +1704,16 @@ const RAW = [
     lock: true
   },
   {
-    q: "226.-Niveles de activación en un plan de emergencia:",
-    options: ["Sistemas alerta, alarma sin notificaciones", "Seguimiento fenómeno sin alarma", "Gestión según nivel", "Medidas según situación", "Identificar situación. Establecer alerta, alarma y notificaciones. Determinar nivel: seguimiento, preemergencia, alerta, alarma e intervención."],
-    correct: 4
+    q: "226.- Niveles de activación en un plan de emergencia:",
+    options: [
+      "Seguimiento del fenómeno sin activar sistemas de alerta",
+      "Gestión de la emergencia según los recursos disponibles",
+      "Aplicación de medidas según la situación y evolución del riesgo",
+      "Identificar la situación, establecer los sistemas de alerta, alarma y notificaciones, y determinar el nivel de activación"
+    ],
+    correct: 3
   },
+
   {
     q: "227.-Fase de preemergencia en plan de emergencia:",
     options: ["Fase caracterizada por la existencia de información sobre la posibilidad de ocurrencia de sucesos capaces de dar lugar a una emergencia. Objetivo: alerta autoridades y servicios e información población", "Análisis información riesgo inminente", "Tareas de rehabilitación", "todas son correctas"],
@@ -1744,15 +1774,27 @@ const RAW = [
     correct: 1
   },
   {
-    q: "238.-Grados clasificación emergencias sanitarias OMS. Grado 2:",
-    options: ["Sometido evaluación", "Afecta países consecuencias mínimas", "Respuesta mínima", "Respuesta mínima oficina", "Evento que afecta a uno o varios países con consecuencias moderadas para la salud pública y que requiere una respuesta moderada de la oficina de la OMS en el país o una respuesta internacional moderada de parte de la OMS."],
-    correct: 4
+    q: "238.- Grados de clasificación de emergencias sanitarias OMS. Grado 2:",
+    options: [
+      "Respuesta moderada",
+      "Respuesta mínima",
+      "Respuesta sustancial / emergencia grave",
+      "Evento sometido a evaluación y seguimiento"
+    ],
+    correct: 0
   },
+
   {
-    q: "239.-Grados clasificación emergencias sanitarias OMS. Grado 3:",
-    options: ["Evaluación", "Mínimas", "Respuesta mínima", "Punto focal", "Moderadas", "Respuesta moderada", "Evento que afecta a uno o varios países con consecuencias sustanciales para la salud pública y que requiere una respuesta sustancial de la oficina de la oms en el país o una respuesta internacional sustancial de parte de la oms."],
-    correct: 6
+    q: "239.- Grados de clasificación de emergencias sanitarias OMS. Grado 3:",
+    options: [
+      "Respuesta sustancial / emergencia grave",
+      "Respuesta moderada",
+      "Respuesta mínima",
+      "Evento sometido a evaluación y seguimiento"
+    ],
+    correct: 0
   },
+
   {
     q: "240.-Modo de abordar emergencia de salud publica de importancia internacional previsto en:",
     options: ["Reglamento sanitario autonómico", "Reglamento sanitario estatal", "Reglamento sanitario europeo", "Reglamento sanitario internacional"],
