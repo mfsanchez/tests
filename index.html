@@ -1,27 +1,49 @@
-<!-- Force redeploy -->
 <!doctype html>
 <html lang="es">
 <head>
   <meta charset="utf-8">
-  <title>Tests de Estudio</title>
+  <title>Grado en Seguridad Pública y Privada</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
+
   <style>
     body {
       font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
       background: #f1f5f9;
       padding: 20px;
+      color: #0f172a;
     }
+
     h1 {
       text-align: center;
-      margin-bottom: 24px;
+      margin-bottom: 6px;
     }
+
+    .subtitle {
+      text-align: center;
+      color: #475569;
+      margin-bottom: 28px;
+      font-size: 14px;
+    }
+
+    .course {
+      max-width: 520px;
+      margin: 0 auto 24px auto;
+    }
+
+    .course h2 {
+      font-size: 16px;
+      margin-bottom: 10px;
+      color: #1e293b;
+      border-left: 4px solid #2563eb;
+      padding-left: 8px;
+    }
+
     .menu {
-      max-width: 420px;
-      margin: auto;
       display: grid;
-      gap: 12px;
+      gap: 10px;
     }
-    a {
+
+    a.subject {
       display: block;
       text-decoration: none;
       padding: 14px;
@@ -31,18 +53,61 @@
       font-weight: 600;
       text-align: center;
       box-shadow: 0 6px 16px rgba(0,0,0,.1);
+      transition: background .15s ease, transform .15s ease;
     }
-    a:hover {
+
+    a.subject:hover {
       background: #e0f2fe;
+      transform: translateY(-1px);
     }
   </style>
 </head>
+
 <body>
-  <h1>📚 Tests disponibles</h1>
-  <div class="menu">
-    <a href="proteccion-civil/">Protección Civil</a>
-    <a href="seguridad-privada/">Seguridad Privada</a>
-    <a href="gestion-organizaciones/">Gestión de Organizaciones</a>
+
+  <h1>🎓 Grado en Seguridad Pública y Privada</h1>
+  <div class="subtitle">
+    Tests interactivos de preparación por curso y asignatura
   </div>
+
+  <!-- PRIMER CURSO -->
+  <div class="course">
+    <h2>📘 Primer Curso</h2>
+    <div class="menu">
+      <a href="gestion-organizaciones/" class="subject">
+        Gestión de Organizaciones
+      </a>
+    </div>
+  </div>
+
+  <!-- SEGUNDO CURSO -->
+  <div class="course">
+    <h2>📗 Segundo Curso</h2>
+    <div class="menu">
+      <a href="seguridad-privada/" class="subject">
+        Seguridad Privada
+      </a>
+    </div>
+  </div>
+
+  <!-- TERCER CURSO -->
+  <div class="course">
+    <h2>📙 Tercer Curso</h2>
+    <div class="menu">
+      <a href="proteccion-civil/" class="subject">
+        Protección Civil y Emergencias
+      </a>
+    </div>
+  </div>
+
+  <!-- CUARTO CURSO -->
+  <div class="course">
+    <h2>📕 Cuarto Curso</h2>
+    <div class="menu">
+      <!-- Asignaturas pendientes de añadir -->
+    </div>
+  </div>
+
 </body>
 </html>
+
