@@ -1,4 +1,4 @@
-# Test Protección Civil y Emergencias
+# Test de Asignaturas del Grado Seguridad Publica y Privada
 
 Repositorio de test para la preparación del examen de  
 **Protección Civil y Emergencias**.
