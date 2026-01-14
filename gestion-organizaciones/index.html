@@ -1,0 +1,1621 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Gestion de Organizaciones</title>
+<style>
+.top-bar {
+  position: relative;
+  z-index: 2000;
+}
+
+#startOverlay {
+  z-index: 1000;
+}
+
+body {
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    margin: 0;
+    padding: 16px;
+    background: #f8fafc;
+  }
+
+  .top-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+  }
+
+  .back-btn {
+    text-decoration: none;
+    font-weight: 600;
+    color: #0f172a;
+    background: #e2e8f0;
+    padding: 8px 12px;
+    border-radius: 10px;
+  }
+
+  .back-btn:hover {
+    background: #cbd5f5;
+  }
+
+  .logo-umh {
+    height: 48px;
+    max-width: 60%;
+    object-fit: contain;
+  }
+
+  @media (max-width: 480px) {
+    .logo-umh {
+      height: 40px;
+    }
+  }
+:root{
+  --bg:#ffffff;
+  --card:#ffffff;
+  --border:#e5e7eb;
+  --text:#111827;
+  --muted:#6b7280;
+  --ok:#16a34a;
+  --bad:#dc2626;
+  --accent:#2563eb;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Arial,sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  padding:16px;
+}
+.wrap{
+  max-width:900px;
+  margin:0 auto;
+}
+h1{
+  font-size:22px;
+  margin-bottom:4px;
+}
+.meta{
+  font-size:13px;
+  color:var(--muted);
+  margin-bottom:16px;
+}
+.card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:16px;
+  padding:16px;
+  box-shadow:0 8px 20px rgba(15,23,42,.08);
+  position:relative;
+  overflow:hidden;
+}
+.stats{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  font-size:13px;
+  margin-bottom:12px;
+}
+.stat{
+  padding:6px 10px;
+  border-radius:999px;
+  border:1px solid rgba(148,163,184,.7);
+  display:flex;
+  align-items:center;
+  gap:6px;
+  background:#f9fafb;
+}
+.stat span.label{color:var(--muted);font-weight:500}
+.stat span.value{font-variant-numeric:tabular-nums}
+.stat.ok{border-color:rgba(34,197,94,.6);background:#ecfdf3;}
+.stat.bad{border-color:rgba(239,68,68,.6);background:#fef2f2;}
+.stat.pen{border-color:rgba(250,204,21,.7);background:#fffbeb;}
+#questionBox{margin-top:4px;}
+#qNumber{
+  font-size:14px;
+  color:var(--accent);
+  font-weight:600;
+  margin-bottom:6px;
+}
+#qText{
+  font-size:18px;
+  font-weight:700;
+  margin-bottom:12px;
+}
+.options{
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+}
+.btn-option{
+  text-align:left;
+  border-radius:999px;
+  border:1px solid rgba(148,163,184,.7);
+  padding:9px 12px;
+  font-size:14px;
+  background:#f9fafb;
+  cursor:pointer;
+  display:flex;
+  gap:8px;
+  align-items:center;
+  transition:transform .12s ease, box-shadow .12s ease, border-color .12s ease, background .12s ease;
+}
+.btn-option span.key{
+  font-weight:700;
+  font-size:12px;
+  padding:2px 7px;
+  border-radius:999px;
+  background:#eef2ff;
+  border:1px solid rgba(129,140,248,.8);
+  color:#111827;
+}
+.btn-option span.label{flex:1}
+.btn-option:hover{
+  transform:translateY(-1px);
+  box-shadow:0 8px 18px rgba(15,23,42,.08);
+  border-color:var(--accent);
+  background:#eff6ff;
+}
+.btn-option.correct{
+  border-color:var(--ok);
+  background:#ecfdf3;
+}
+.btn-option.wrong{
+  border-color:var(--bad);
+  background:#fef2f2;
+}
+.btn-option.disabled{
+  opacity:.9;
+  cursor:default;
+}
+.footer{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-top:12px;
+  gap:8px;
+  flex-wrap:nowrap;
+}
+.nav-buttons{
+  display:flex;
+  gap:8px;
+}
+button.nav{
+  border-radius:999px;
+  border:1px solid rgba(148,163,184,.9);
+  background:#ffffff;
+  color:#111827;
+  padding:7px 14px;
+  font-size:13px;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  gap:6px;
+  transition:transform .12s ease, box-shadow .12s ease, border-color .12s ease, background .12s ease;
+}
+button.nav:hover{
+  transform:translateY(-1px);
+  box-shadow:0 8px 18px rgba(15,23,42,.12);
+  border-color:var(--accent);
+  background:#eff6ff;
+}
+button.nav:disabled{
+  opacity:.4;
+  cursor:default;
+  box-shadow:none;
+  transform:none;
+}
+#feedback{
+  font-size:13px;
+  min-height:18px;
+  flex:1;
+}
+#feedback.ok{color:var(--ok);}
+#feedback.bad{color:var(--bad);}
+#feedback.neutral{color:var(--muted);}
+
+/* Animaciones base */
+.flash-correct{
+  animation:flashGreen .45s ease-out;
+}
+.flash-wrong{
+  animation:flashRed .45s ease-out;
+}
+.shake{
+  animation:shake .3s ease-in-out;
+}
+@keyframes flashGreen{
+  0%{box-shadow:0 0 0 0 rgba(22,163,74,.0);}
+  40%{box-shadow:0 0 0 12px rgba(22,163,74,.18);}
+  100%{box-shadow:0 0 0 0 rgba(22,163,74,.0);}
+}
+@keyframes flashRed{
+  0%{box-shadow:0 0 0 0 rgba(220,38,38,.0);}
+  40%{box-shadow:0 0 0 12px rgba(220,38,38,.18);}
+  100%{box-shadow:0 0 0 0 rgba(220,38,38,.0);}
+}
+@keyframes shake{
+  0%,100%{transform:translateX(0);}
+  20%{transform:translateX(-4px);}
+  40%{transform:translateX(4px);}
+  60%{transform:translateX(-3px);}
+  80%{transform:translateX(3px);}
+}
+
+/* Animación divertida al fallar: viñeta tipo cómic */
+.explosion{
+  position:absolute;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%) scale(.2);
+  pointer-events:none;
+  animation:boomPop .75s ease-out forwards;
+}
+.explosion-core{
+  width:180px;
+  height:180px;
+  border-radius:50%;
+  background:
+    radial-gradient(circle at 30% 30%,#fef9c3 0,#fde047 30%,transparent 75%),
+    radial-gradient(circle at 70% 40%,#fee2e2 0,#fecaca 35%,transparent 80%),
+    radial-gradient(circle at 50% 65%,#b91c1c 0,#7f1d1d 45%,transparent 80%);
+  border:4px solid #111827;
+  box-shadow:0 0 25px rgba(248,113,113,.8);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  position:relative;
+}
+.explosion-core::before{
+  /* picos tipo cómic */
+  content:"";
+  position:absolute;
+  inset:-18px;
+  background:#f97316;
+  clip-path:polygon(50% 0%,63% 13%,83% 9%,79% 27%,94% 35%,80% 47%,90% 63%,71% 65%,74% 83%,57% 76%,50% 95%,43% 76%,26% 83%,29% 65%,10% 63%,20% 47%,6% 35%,21% 27%,17% 9%,37% 13%);
+  z-index:-1;
+}
+.explosion-label{
+  font-size:26px;
+  font-weight:900;
+  color:#111827;
+  text-shadow:2px 2px 0 #facc15, -2px -2px 0 #facc15;
+}
+
+/* trocitos que saltan */
+.explosion-piece{
+  position:absolute;
+  width:10px;
+  height:22px;
+  border-radius:3px;
+  background:#ef4444;
+  box-shadow:0 0 6px rgba(127,29,29,.8);
+  transform-origin:center bottom;
+  animation:pieceFly .75s ease-out forwards;
+}
+
+@keyframes boomPop{
+  0%{
+    transform:translate(-50%,-50%) scale(.2) rotate(-8deg);
+    opacity:0;
+  }
+  40%{
+    transform:translate(-50%,-50%) scale(1.05) rotate(3deg);
+    opacity:1;
+  }
+  70%{
+    transform:translate(-50%,-50%) scale(0.95) rotate(-2deg);
+    opacity:.95;
+  }
+  100%{
+    transform:translate(-50%,-50%) scale(0.8) rotate(0deg);
+    opacity:0;
+  }
+}
+
+@keyframes pieceFly{
+  0%{
+    transform:translate(0,0) scale(1);
+    opacity:1;
+  }
+  100%{
+    transform:translate(var(--dx),var(--dy)) scale(.3);
+    opacity:0;
+  }
+}
+
+/* Confeti / gorros al acertar */
+.confetti-container{
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  overflow:hidden;
+}
+.confetti-emoji{
+  position:absolute;
+  top:-12%;
+  font-size:20px;
+  animation:fallConfetti 2.2s ease-out forwards;
+}
+@keyframes fallConfetti{
+  0%{
+    transform:translateY(0) rotate(0deg);
+    opacity:1;
+  }
+  100%{
+    transform:translateY(260%) rotate(360deg);
+    opacity:0;
+  }
+}
+
+/* Overlay inicio */
+#startOverlay{
+  position:fixed;
+  inset:0;
+  background:rgba(15,23,42,.35);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  z-index:20;
+}
+.start-box{
+  max-width:420px;
+  background:#ffffff;
+  border-radius:18px;
+  padding:20px;
+  border:1px solid rgba(148,163,184,.8);
+  box-shadow:0 18px 40px rgba(15,23,42,.25);
+}
+.start-text{
+  font-size:14px;
+  color:#6b7280;
+  margin-bottom:14px;
+}
+.start-warning{
+  font-size:14px;
+  color:#b45309;
+  font-weight:600;
+  margin-bottom:8px;
+}
+button#startBtn{
+  width:100%;
+  border-radius:999px;
+  border:none;
+  padding:9px 14px;
+  font-size:14px;
+  font-weight:600;
+  cursor:pointer;
+  background:linear-gradient(135deg,#38bdf8,#22c55e);
+  color:#020617;
+  box-shadow:0 12px 25px rgba(8,47,73,.35);
+  transition:transform .12s ease, box-shadow .12s ease;
+}
+button#startBtn:hover{
+  transform:translateY(-1px);
+  box-shadow:0 18px 35px rgba(8,47,73,.5);
+}
+
+/* Resultado final */
+#finalBox{
+  margin-top:12px;
+  padding-top:10px;
+  border-top:1px dashed rgba(148,163,184,.8);
+  font-size:13px;
+  color:#6b7280;
+}
+#finalBox strong{color:var(--accent);}
+</style>
+</head>
+<body>
+<header class="top-bar">
+  <a href="../" class="back-btn">⬅ Volver al menú</a>
+  <img src="../assets/umh.png" alt="Universitas Miguel Hernández" class="logo-umh">
+</header>
+<div id="startOverlay">
+  <div class="start-box">
+    <div class="start-warning">⚠️ ATENCIÓN:GESTION DE ORGANIZACIONES 100% PREGUNTAS</div>
+    <div class="start-text">
+      Úsalo para practicar, pero contrasta siempre con temario, normativa y criterio del profesorado.
+    </div>
+    <button id="startBtn">Empezar el test</button>
+  </div>
+</div>
+
+<div class="wrap">
+  <h1>GESTION DE ORGANIZACIONES</h1>
+  <div class="meta">
+    Test interactivo · Aciertos/Fallos · Penalización: cada 3 fallos se resta 1 acierto · Preguntas barajadas.
+  </div>
+
+  <div class="card" id="card">
+    <div class="stats">
+      <div class="stat ok"><span class="label">Aciertos</span><span class="value" id="statCorrect">0</span></div>
+      <div class="stat bad"><span class="label">Fallos</span><span class="value" id="statWrong">0</span></div>
+      <div class="stat pen"><span class="label">Penalizaciones</span><span class="value" id="statPenalty">0</span></div>
+      <div class="stat"><span class="label">Pregunta</span><span class="value" id="statIndex">1 / 50</span></div>
+    </div>
+
+    <div id="questionBox">
+      <div id="qNumber">Pregunta 1</div>
+      <div id="qText"></div>
+      <div class="options" id="optionsBox"></div>
+    </div>
+
+    <div class="footer">
+      <div id="feedback" class="neutral"></div>
+      <div class="nav-buttons">
+        <button class="nav" id="prevBtn" disabled>⟵ Anterior</button>
+        <button class="nav" id="nextBtn">Siguiente ⟶</button>
+        <button class="nav" id="retryWrongBtn">Repetir errores</button>
+        <button class="nav" id="shuffleBtn">Barajar preguntas</button>
+      </div>
+    </div>
+
+    <div id="finalBox"></div>
+  </div>
+</div>
+
+<script>
+
+const RAW = [
+{
+  q: "¿Quién afirmó que todo lo que nos rodea son organizaciones (bestias colectivas)?",
+  options: ["Barnard", "Gibson", "Mintzberg"],
+  correct: 2
+},
+{
+  q: "¿Cuáles son características básicas de las organizaciones?",
+  options: [
+    "Grupo social estructurado de personas",
+    "Orientadas a un fin común",
+    "Ambas son correctas"
+  ],
+  correct: 2
+},
+{
+  q: "¿Quién definió la organización como una unidad coordinada formada por un mínimo de dos personas que trabajan para alcanzar objetivos comunes?",
+  options: ["Barnard", "Gibson y otros", "Sánchez y González"],
+  correct: 1
+},
+{
+  q: "¿Quién definió la organización como un sistema de actividades conscientemente coordinadas de dos o más personas?",
+  options: ["Barnard", "Gibson y otros", "Sánchez y González"],
+  correct: 0
+},
+{
+  q: "Según Sánchez y González, ¿qué definiciones de empresa son correctas?",
+  options: [
+    "Empresa orientada a obtener beneficios mediante la comercialización de productos o servicios",
+    "Empresa como organización con finalidad económica y social",
+    "Ambas son correctas"
+  ],
+  correct: 2
+},
+{
+  q: "¿De qué depende el funcionamiento, éxito y fracaso de la empresa?",
+  options: [
+    "De los objetivos",
+    "De las decisiones, recursos y funciones",
+    "Ambas son correctas"
+  ],
+  correct: 2
+},
+{
+  q: "¿Cuáles son las dimensiones de la empresa?",
+  options: [
+    "Funcional y técnico-económica",
+    "Económico-financiera, jurídico-mercantil y social",
+    "Funcional, técnico-económica, económico-financiera, jurídico-mercantil y social"
+  ],
+  correct: 2
+},
+{
+  q: "¿Qué definición de empresa aglutina todas sus dimensiones?",
+  options: [
+    "Organización orientada a minimizar costes",
+    "Organización económica con estructura jurídica y organizativa que distribuye poder y responsabilidad",
+    "Empresa sin estructura organizativa"
+  ],
+  correct: 1
+},
+{
+  q: "¿A quién corresponde la propiedad de la empresa?",
+  options: [
+    "A las personas que ostentan la titularidad, una o varias",
+    "A los directivos de la empresa",
+    "A los trabajadores"
+  ],
+  correct: 0
+},
+{
+  q: "¿Quién ejerce la dirección de la empresa?",
+  options: [
+    "Quienes fijan objetivos",
+    "Quienes fijan objetivos y toman decisiones",
+    "Quienes fijan objetivos, toman decisiones y dirigen el trabajo de otros"
+  ],
+  correct: 2
+},
+{
+  q: "¿Para qué es necesario el gobierno de la empresa?",
+  options: [
+    "Para asegurar el alineamiento entre directivos y propietarios",
+    "Para fijar objetivos operativos",
+    "Para ejecutar tareas diarias"
+  ],
+  correct: 0
+},
+{
+  q: "¿Qué es el Consejo de Administración?",
+  options: [
+    "Grupo pequeño que dirige y supervisa a los directivos",
+    "Grupo grande que dirige a los trabajadores",
+    "Órgano operativo de la empresa"
+  ],
+  correct: 0
+},
+{
+  q: "Según Smith y Marx, el capitalista es:",
+  options: [
+    "Organizador del proceso productivo",
+    "Propietario de los medios de producción y apropiador del beneficio",
+    "Asumidor del riesgo económico"
+  ],
+  correct: 1
+},
+{
+  q: "¿Cuál es la definición correcta de organización?",
+  options: [
+    "Grupo social estructurado orientado a un fin común",
+    "Sistema jerárquico que requiere coordinación e interactúa con el entorno",
+    "Ambas son correctas"
+  ],
+  correct: 2
+},
+{
+  q: "¿Cuál es la definición correcta de administración?",
+  options: [
+    "Control consciente de objetivos, tareas y responsables",
+    "Control consciente de recursos y comprobación de objetivos",
+    "Ambas son correctas"
+  ],
+  correct: 2
+},
+{
+  q: "¿Quiénes llevan a cabo las actividades de la administración?",
+  options: ["Empresarios", "Directivos o gerentes", "Trabajadores"],
+  correct: 1
+},
+{
+  q: "¿Cómo se representa gráficamente la estructura de una organización?",
+  options: [
+    "Mediante un flujograma",
+    "Mediante un organigrama",
+    "Mediante un cuadro de mando"
+  ],
+  correct: 1
+},
+{
+  q: "¿Qué muestra un organigrama?",
+  options: [
+    "Los procesos productivos",
+    "Las relaciones jerárquicas, funciones y responsabilidades",
+    "Los resultados económicos"
+  ],
+  correct: 1
+},
+{
+  q: "¿Qué niveles jerárquicos suelen existir en una organización?",
+  options: [
+    "Nivel estratégico, táctico y operativo",
+    "Nivel técnico, financiero y social",
+    "Nivel político, económico y jurídico"
+  ],
+  correct: 0
+},
+{
+  q: "¿Cómo se denomina el nivel superior de la organización?",
+  options: [
+    "Dirección operativa",
+    "Alta dirección",
+    "Dirección intermedia"
+  ],
+  correct: 1
+},
+{
+  q: "¿Cuál es la principal función de la alta dirección?",
+  options: [
+    "Ejecutar tareas operativas",
+    "Definir objetivos estratégicos y políticas generales",
+    "Supervisar tareas concretas"
+  ],
+  correct: 1
+},
+{
+  q: "¿Quiénes forman parte habitualmente de la alta dirección?",
+  options: [
+    "Mandos intermedios",
+    "Consejo de administración y alta gerencia",
+    "Trabajadores cualificados"
+  ],
+  correct: 1
+},
+{
+  q: "¿Qué nivel de dirección se encarga de coordinar y transmitir las decisiones estratégicas?",
+  options: [
+    "Dirección operativa",
+    "Dirección intermedia",
+    "Alta dirección"
+  ],
+  correct: 1
+},
+{
+  q: "¿Cuál es la función principal de la dirección intermedia?",
+  options: [
+    "Diseñar la estrategia global",
+    "Coordinar departamentos y equipos",
+    "Ejecutar tareas manuales"
+  ],
+  correct: 1
+},
+{
+  q: "¿Quiénes suelen formar parte de la dirección intermedia?",
+  options: [
+    "Directores de área, jefes de departamento",
+    "Consejo de administración",
+    "Personal administrativo"
+  ],
+  correct: 0
+},
+{
+  q: "¿Qué nivel se encarga de la ejecución directa de las tareas?",
+  options: [
+    "Alta dirección",
+    "Dirección intermedia",
+    "Dirección operativa"
+  ],
+  correct: 2
+},
+{
+  q: "La dirección operativa se caracteriza por:",
+  options: [
+    "Fijar objetivos estratégicos",
+    "Aplicar instrucciones y realizar tareas concretas",
+    "Definir la misión de la empresa"
+  ],
+  correct: 1
+},
+{
+  q: "¿Quiénes forman parte del nivel operativo?",
+  options: [
+    "Consejeros",
+    "Mandos intermedios",
+    "Supervisores y trabajadores"
+  ],
+  correct: 2
+},
+{
+  q: "¿Qué relación existe entre los niveles de dirección?",
+  options: [
+    "Son independientes entre sí",
+    "Existe una relación jerárquica y de coordinación",
+    "No existe comunicación entre ellos"
+  ],
+  correct: 1
+},
+{
+  q: "¿Qué principio organizativo implica que cada empleado reciba órdenes de un solo superior?",
+  options: [
+    "Principio de especialización",
+    "Principio de unidad de mando",
+    "Principio de descentralización"
+  ],
+  correct: 1
+},
+{
+  q: "¿Qué ventaja aporta una clara delimitación de niveles jerárquicos?",
+  options: [
+    "Incrementa la confusión organizativa",
+    "Facilita la coordinación y el control",
+    "Reduce la responsabilidad"
+  ],
+  correct: 1
+},
+{
+  q: "¿Qué problema puede generar una excesiva jerarquización?",
+  options: [
+    "Agilidad en la toma de decisiones",
+    "Rigidez organizativa y lentitud",
+    "Mayor motivación del personal"
+  ],
+  correct: 1
+},
+{
+  q: "¿Cuáles son las funciones básicas de la dirección?",
+  options: [
+    "Planificar, organizar, dirigir y controlar",
+    "Planificar, ejecutar y evaluar",
+    "Organizar, motivar y sancionar"
+  ],
+  correct: 0
+},
+{
+  q: "¿En qué consiste la función de planificación?",
+  options: [
+    "Ejecutar tareas asignadas",
+    "Definir objetivos y determinar las acciones para alcanzarlos",
+    "Controlar resultados obtenidos"
+  ],
+  correct: 1
+},
+{
+  q: "¿Qué implica la función de organización?",
+  options: [
+    "Asignar tareas, recursos y responsabilidades",
+    "Evaluar resultados",
+    "Definir la misión de la empresa"
+  ],
+  correct: 0
+},
+{
+  q: "¿Cuál es el objetivo principal de la función de dirección?",
+  options: [
+    "Motivar, liderar y guiar a las personas hacia los objetivos",
+    "Diseñar la estructura formal",
+    "Analizar el entorno externo"
+  ],
+  correct: 0
+},
+{
+  q: "¿En qué consiste la función de control?",
+  options: [
+    "Supervisar y corregir desviaciones respecto a los objetivos",
+    "Asignar recursos humanos",
+    "Establecer la cultura organizativa"
+  ],
+  correct: 0
+},
+{
+  q: "¿Qué autor identificó y sistematizó las funciones de la dirección?",
+  options: [
+    "Frederick Taylor",
+    "Henri Fayol",
+    "Max Weber"
+  ],
+  correct: 1
+},
+{
+  q: "¿Cuántas funciones básicas de la empresa distinguió Henri Fayol?",
+  options: [
+    "Tres",
+    "Cinco",
+    "Seis"
+  ],
+  correct: 2
+},
+{
+  q: "Según Fayol, ¿cuáles son las funciones de la empresa?",
+  options: [
+    "Técnicas, comerciales, financieras, de seguridad, contables y administrativas",
+    "Productivas, económicas y sociales",
+    "Operativas, tácticas y estratégicas"
+  ],
+  correct: 0
+},
+{
+  q: "¿Qué función consideraba Fayol como la más importante?",
+  options: [
+    "Función técnica",
+    "Función administrativa",
+    "Función financiera"
+  ],
+  correct: 1
+},
+{
+  q: "¿Cuáles son los elementos de la función administrativa según Fayol?",
+  options: [
+    "Prever, organizar, mandar, coordinar y controlar",
+    "Planificar, ejecutar y evaluar",
+    "Dirigir, motivar y sancionar"
+  ],
+  correct: 0
+},
+{
+  q: "¿Qué principio de Fayol establece que debe existir un solo jefe por empleado?",
+  options: [
+    "Principio de jerarquía",
+    "Principio de unidad de mando",
+    "Principio de disciplina"
+  ],
+  correct: 1
+},
+{
+  q: "¿Qué principio de Fayol se refiere al respeto de normas y acuerdos?",
+  options: [
+    "Disciplina",
+    "Autoridad",
+    "Centralización"
+  ],
+  correct: 0
+},
+{
+  q: "¿Qué principio de Fayol implica que la autoridad debe ir acompañada de responsabilidad?",
+  options: [
+    "Jerarquía",
+    "Autoridad y responsabilidad",
+    "Orden"
+  ],
+  correct: 1
+},
+{
+  q: "¿Qué principio de Fayol defiende la subordinación del interés individual al general?",
+  options: [
+    "Equidad",
+    "Espíritu de equipo",
+    "Interés general"
+  ],
+  correct: 2
+},
+{
+  q: "¿Qué principio de Fayol fomenta la unión y armonía entre los miembros de la organización?",
+  options: [
+    "Espíritu de equipo",
+    "Centralización",
+    "Iniciativa"
+  ],
+  correct: 0
+},
+{
+  q: "¿Qué función directiva se ocupa de armonizar esfuerzos y actividades?",
+  options: [
+    "Control",
+    "Coordinación",
+    "Planificación"
+  ],
+  correct: 1
+},
+{
+  q: "¿Qué se entiende por organización formal?",
+  options: [
+    "Relaciones espontáneas entre personas",
+    "Estructura planificada y oficialmente establecida",
+    "Red de relaciones personales no reguladas"
+  ],
+  correct: 1
+},
+{
+  q: "¿Qué caracteriza a la organización informal?",
+  options: [
+    "Está definida por normas escritas",
+    "Surge espontáneamente de las relaciones personales",
+    "Es diseñada por la dirección"
+  ],
+  correct: 1
+},
+{
+  q: "¿Cuál es la principal diferencia entre organización formal e informal?",
+  options: [
+    "El número de trabajadores",
+    "El grado de planificación y oficialidad",
+    "El nivel tecnológico"
+  ],
+  correct: 1
+},
+{
+  q: "¿Qué ventaja puede aportar la organización informal?",
+  options: [
+    "Genera conflictos permanentes",
+    "Mejora la comunicación y cohesión social",
+    "Reduce la motivación"
+  ],
+  correct: 1
+},
+{
+  q: "¿Qué riesgo puede suponer la organización informal?",
+  options: [
+    "Exceso de control",
+    "Difusión de rumores y resistencia al cambio",
+    "Mayor rigidez organizativa"
+  ],
+  correct: 1
+},
+{
+  q: "¿Qué es la autoridad en una organización?",
+  options: [
+    "Capacidad informal de influir",
+    "Derecho legítimo a mandar y tomar decisiones",
+    "Imposición basada únicamente en la fuerza"
+  ],
+  correct: 1
+},
+{
+  q: "¿Qué relación existe entre autoridad y responsabilidad?",
+  options: [
+    "No existe relación",
+    "La autoridad debe ir acompañada de responsabilidad",
+    "La responsabilidad sustituye a la autoridad"
+  ],
+  correct: 1
+},
+{
+  q: "¿Qué se entiende por delegación de autoridad?",
+  options: [
+    "Renunciar definitivamente al poder",
+    "Transferir autoridad y responsabilidad a un subordinado",
+    "Eliminar la jerarquía"
+  ],
+  correct: 1
+},
+{
+  q: "¿Quién mantiene la responsabilidad última tras delegar?",
+  options: [
+    "El subordinado",
+    "La organización",
+    "El superior que delega"
+  ],
+  correct: 2
+},
+{
+  q: "¿Cuál es una ventaja de la delegación?",
+  options: [
+    "Centralizar todas las decisiones",
+    "Desarrollar capacidades en los subordinados",
+    "Eliminar el control"
+  ],
+  correct: 1
+},
+{
+  q: "¿Qué es la centralización?",
+  options: [
+    "Distribución del poder de decisión en niveles inferiores",
+    "Concentración de la toma de decisiones en la alta dirección",
+    "Ausencia de jerarquía"
+  ],
+  correct: 1
+},
+{
+  q: "¿Qué es la descentralización?",
+  options: [
+    "Concentrar decisiones en la cúspide",
+    "Delegar autoridad en niveles inferiores",
+    "Eliminar la autoridad"
+  ],
+  correct: 1
+},
+{
+  q: "¿Qué ventaja suele asociarse a la descentralización?",
+  options: [
+    "Mayor lentitud en la toma de decisiones",
+    "Mayor flexibilidad y rapidez",
+    "Pérdida de control total"
+  ],
+  correct: 1
+},
+{
+  q: "¿Qué factor influye en el grado de centralización de una empresa?",
+  options: [
+    "El tamaño y la complejidad organizativa",
+    "El color corporativo",
+    "La antigüedad de los empleados"
+  ],
+  correct: 0
+},
+{
+  q: "¿Qué tipo de organización favorece la descentralización?",
+  options: [
+    "Estructuras rígidas y jerárquicas",
+    "Organizaciones grandes y dinámicas",
+    "Organizaciones sin objetivos"
+  ],
+  correct: 1
+},
+{
+  q: "¿Qué afirmación es correcta?",
+  options: [
+    "La centralización siempre es negativa",
+    "La descentralización siempre elimina riesgos",
+    "El grado óptimo depende del contexto y objetivos"
+  ],
+  correct: 2
+},
+{
+  q: "¿Qué se entiende por liderazgo en una organización?",
+  options: [
+    "Capacidad de imponer órdenes",
+    "Capacidad de influir y guiar a las personas hacia objetivos comunes",
+    "Capacidad técnica exclusiva del directivo"
+  ],
+  correct: 1
+},
+{
+  q: "¿Qué diferencia principal existe entre autoridad y liderazgo?",
+  options: [
+    "La autoridad es informal y el liderazgo formal",
+    "La autoridad se basa en el cargo y el liderazgo en la influencia personal",
+    "No existe ninguna diferencia"
+  ],
+  correct: 1
+},
+{
+  q: "¿Qué estilo de liderazgo se caracteriza por la toma de decisiones centralizada?",
+  options: [
+    "Liderazgo democrático",
+    "Liderazgo autoritario",
+    "Liderazgo laissez-faire"
+  ],
+  correct: 1
+},
+{
+  q: "¿Qué estilo de liderazgo fomenta la participación del grupo en la toma de decisiones?",
+  options: [
+    "Autoritario",
+    "Democrático",
+    "Paternalista"
+  ],
+  correct: 1
+},
+{
+  q: "¿Qué estilo de liderazgo se caracteriza por una mínima intervención del líder?",
+  options: [
+    "Autoritario",
+    "Democrático",
+    "Laissez-faire"
+  ],
+  correct: 2
+},
+{
+  q: "¿Qué es la motivación en el ámbito organizativo?",
+  options: [
+    "Proceso que impulsa a las personas a actuar para alcanzar objetivos",
+    "Sistema de sanciones",
+    "Capacidad de control jerárquico"
+  ],
+  correct: 0
+},
+{
+  q: "¿Qué autor propuso la teoría de la jerarquía de necesidades?",
+  options: [
+    "Herzberg",
+    "Maslow",
+    "McGregor"
+  ],
+  correct: 1
+},
+{
+  q: "Según Maslow, ¿qué necesidad ocupa el nivel más básico?",
+  options: [
+    "Necesidades sociales",
+    "Necesidades fisiológicas",
+    "Necesidades de autorrealización"
+  ],
+  correct: 1
+},
+{
+  q: "¿Qué necesidades se sitúan en la cúspide de la pirámide de Maslow?",
+  options: [
+    "Necesidades de seguridad",
+    "Necesidades sociales",
+    "Necesidades de autorrealización"
+  ],
+  correct: 2
+},
+{
+  q: "¿Qué teoría distingue entre factores higiénicos y motivadores?",
+  options: [
+    "Teoría X e Y",
+    "Teoría de Herzberg",
+    "Teoría de Maslow"
+  ],
+  correct: 1
+},
+{
+  q: "Según Herzberg, ¿qué son los factores higiénicos?",
+  options: [
+    "Factores que motivan directamente",
+    "Factores cuya ausencia genera insatisfacción",
+    "Factores irrelevantes"
+  ],
+  correct: 1
+},
+{
+  q: "Según Herzberg, ¿qué generan los factores motivadores?",
+  options: [
+    "Insatisfacción",
+    "Neutralidad",
+    "Satisfacción y motivación"
+  ],
+  correct: 2
+},
+{
+  q: "¿Quién formuló la Teoría X y la Teoría Y?",
+  options: [
+    "Maslow",
+    "McGregor",
+    "Taylor"
+  ],
+  correct: 1
+},
+{
+  q: "La Teoría X parte de la idea de que los trabajadores:",
+  options: [
+    "Buscan autorrealización",
+    "Evitan el trabajo y necesitan control",
+    "Son autónomos y responsables"
+  ],
+  correct: 1
+},
+{
+  q: "La Teoría Y considera que los trabajadores:",
+  options: [
+    "Evitan responsabilidades",
+    "Necesitan supervisión constante",
+    "Pueden autodirigirse y asumir responsabilidades"
+  ],
+  correct: 2
+},
+{
+  q: "¿Qué relación existe entre liderazgo y motivación?",
+  options: [
+    "No existe relación",
+    "El liderazgo influye directamente en la motivación",
+    "La motivación elimina la necesidad de liderazgo"
+  ],
+  correct: 1
+},
+{
+  q: "¿En qué consiste la función de control dentro de la dirección?",
+  options: [
+    "Definir objetivos estratégicos",
+    "Comparar resultados con los objetivos y corregir desviaciones",
+    "Motivar a los trabajadores"
+  ],
+  correct: 1
+},
+{
+  q: "¿Cuál es el objetivo principal del control?",
+  options: [
+    "Sancionar a los trabajadores",
+    "Garantizar que la organización alcance sus objetivos",
+    "Reducir la autonomía"
+  ],
+  correct: 1
+},
+{
+  q: "¿Qué fases componen el proceso de control?",
+  options: [
+    "Establecer estándares, medir resultados, comparar y corregir",
+    "Planificar, organizar y dirigir",
+    "Evaluar, sancionar y motivar"
+  ],
+  correct: 0
+},
+{
+  q: "¿Qué es la estrategia empresarial?",
+  options: [
+    "Conjunto de decisiones a corto plazo",
+    "Conjunto de decisiones y acciones para alcanzar objetivos a largo plazo",
+    "Plan operativo diario"
+  ],
+  correct: 1
+},
+{
+  q: "¿Qué autor definió la estrategia como la determinación de objetivos a largo plazo y la asignación de recursos?",
+  options: [
+    "Porter",
+    "Chandler",
+    "Mintzberg"
+  ],
+  correct: 1
+},
+{
+  q: "¿Qué es el análisis DAFO?",
+  options: [
+    "Análisis financiero",
+    "Análisis de Debilidades, Amenazas, Fortalezas y Oportunidades",
+    "Análisis de productividad"
+  ],
+  correct: 1
+},
+{
+  q: "¿Qué elementos analiza el DAFO interno?",
+  options: [
+    "Fortalezas y debilidades",
+    "Amenazas y oportunidades",
+    "Entorno político y económico"
+  ],
+  correct: 0
+},
+{
+  q: "¿Qué elementos analiza el DAFO externo?",
+  options: [
+    "Fortalezas y oportunidades",
+    "Debilidades y amenazas",
+    "Amenazas y oportunidades"
+  ],
+  correct: 2
+},
+{
+  q: "¿Qué es el análisis PESTEL?",
+  options: [
+    "Análisis interno de la empresa",
+    "Análisis del entorno político, económico, social, tecnológico, ecológico y legal",
+    "Análisis de recursos humanos"
+  ],
+  correct: 1
+},
+{
+  q: "¿Qué fuerza NO forma parte del modelo de Porter?",
+  options: [
+    "Poder de negociación de proveedores",
+    "Poder de negociación de clientes",
+    "Capacidad financiera interna"
+  ],
+  correct: 2
+},
+{
+  q: "¿Cuáles son las cinco fuerzas de Porter?",
+  options: [
+    "Competidores, proveedores, clientes, productos sustitutivos y nuevos entrantes",
+    "Clientes, trabajadores, gobierno, proveedores y competidores",
+    "Entorno político, económico y social"
+  ],
+  correct: 0
+},
+{
+  q: "¿Qué se entiende por toma de decisiones?",
+  options: [
+    "Elección entre diferentes alternativas",
+    "Aplicación automática de normas",
+    "Ejecución de órdenes"
+  ],
+  correct: 0
+},
+{
+  q: "¿Qué caracteriza a una decisión programada?",
+  options: [
+    "Se toma ante situaciones nuevas y complejas",
+    "Se basa en reglas y procedimientos establecidos",
+    "Carece de información previa"
+  ],
+  correct: 1
+},
+{
+  q: "¿Qué caracteriza a una decisión no programada?",
+  options: [
+    "Se toma rutinariamente",
+    "Se basa en normas existentes",
+    "Se toma ante problemas nuevos y no estructurados"
+  ],
+  correct: 2
+},
+{
+  q: "¿Qué nivel directivo suele tomar decisiones estratégicas?",
+  options: [
+    "Nivel operativo",
+    "Dirección intermedia",
+    "Alta dirección"
+  ],
+  correct: 2
+},
+{
+  q: "¿Qué afirmación es correcta respecto a la toma de decisiones?",
+  options: [
+    "Siempre se dispone de información completa",
+    "Existe racionalidad limitada",
+    "No influyen factores humanos"
+  ],
+  correct: 1
+}
+
+
+
+]
+
+function shuffle(array){
+  const a = array.slice();
+  for(let i=a.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]] = [a[j],a[i]];
+  }
+  return a;
+}
+
+// Construir preguntas (barajando preguntas y, salvo lock:true, también opciones)
+function buildQuestionsFrom(rawArray){
+  return shuffle(rawArray).map(q => {
+    if (q.lock) {
+      return {
+        q: q.q,
+        options: q.options.slice(),
+        correct: q.correct,
+        answer: null,
+        lock: true
+      };
+    } else {
+      const idxs = shuffle(q.options.map((_, i) => i));
+      const newOptions = idxs.map(i => q.options[i]);
+      const newCorrect = idxs.indexOf(q.correct);
+      return {
+        q: q.q,
+        options: newOptions,
+        correct: newCorrect,
+        answer: null,
+        lock: false
+      };
+    }
+  });
+}
+
+
+// Estado inicial
+let questions = buildQuestionsFrom(RAW);
+
+let current = 0;
+let correctCount = 0;
+let wrongCount = 0;
+let penaltyCount = 0;
+let failStreak = 0;
+let testFinished = false;
+
+const qTextEl = document.getElementById("qText");
+const qNumberEl = document.getElementById("qNumber");
+const optionsBox = document.getElementById("optionsBox");
+const statCorrectEl = document.getElementById("statCorrect");
+const statWrongEl = document.getElementById("statWrong");
+const statPenaltyEl = document.getElementById("statPenalty");
+const statIndexEl = document.getElementById("statIndex");
+const feedbackEl = document.getElementById("feedback");
+const prevBtn = document.getElementById("prevBtn");
+const nextBtn = document.getElementById("nextBtn");
+const retryWrongBtn = document.getElementById("retryWrongBtn");
+const shuffleBtn = document.getElementById("shuffleBtn");
+const cardEl = document.getElementById("card");
+const finalBox = document.getElementById("finalBox");
+
+function allAnswered(){
+  return questions.every(q => q.answer !== null);
+}
+
+function renderQuestion(){
+  const q = questions[current];
+  qNumberEl.textContent = "Pregunta " + (current+1);
+  qTextEl.textContent = q.q;
+  statIndexEl.textContent = (current+1) + " / " + questions.length;
+  optionsBox.innerHTML = "";
+  const keys = ["A","B","C","D"];
+
+  q.options.forEach((opt,idx)=>{
+    const btn = document.createElement("button");
+    btn.className = "btn-option";
+    btn.dataset.index = idx;
+    btn.innerHTML = `<span class="key">${keys[idx]}</span><span class="label">${opt}</span>`;
+    if(q.answer !== null){
+      btn.classList.add("disabled");
+      if(idx === q.correct) btn.classList.add("correct");
+      if(idx === q.answer && q.answer !== q.correct) btn.classList.add("wrong");
+    }
+    btn.addEventListener("click", ()=> handleAnswer(idx));
+    optionsBox.appendChild(btn);
+  });
+
+  prevBtn.disabled = current === 0;
+  nextBtn.disabled = current === questions.length-1;
+  feedbackEl.textContent = q.answer === null ?
+    "Elige una opción. Cada 3 fallos se resta 1 acierto." :
+    (q.answer === q.correct ? "Respuesta ya contestada: correcta." : "Respuesta ya contestada: incorrecta.");
+  feedbackEl.className = "neutral";
+}
+
+function triggerExplosion(){
+  const ex = document.createElement("div");
+  ex.className = "explosion";
+
+  const core = document.createElement("div");
+  core.className = "explosion-core";
+  const label = document.createElement("div");
+  label.className = "explosion-label";
+  label.textContent = "💥 ¡BOOM!";
+  core.appendChild(label);
+  ex.appendChild(core);
+
+  // trocitos que saltan alrededor
+  const pieces = 16;
+  for(let i=0;i<pieces;i++){
+    const piece = document.createElement("div");
+    piece.className = "explosion-piece";
+    const angle = Math.random()*2*Math.PI;
+    const dist = 80 + Math.random()*80;
+    const dx = Math.cos(angle)*dist;
+    const dy = Math.sin(angle)*dist;
+    piece.style.setProperty("--dx", dx + "px");
+    piece.style.setProperty("--dy", dy + "px");
+    ex.appendChild(piece);
+  }
+
+  cardEl.appendChild(ex);
+  setTimeout(()=> {
+    if (ex.parentNode) ex.parentNode.removeChild(ex);
+  }, 800);
+}
+
+function triggerConfetti(){
+  const container = document.createElement("div");
+  container.className = "confetti-container";
+  const emojis = ["🥳","🎉","🎊","🎈","🎉","🥳","🎊"];
+  const pieces = 48;
+  for(let i=0;i<pieces;i++){
+    const span = document.createElement("span");
+    span.className = "confetti-emoji";
+    span.textContent = emojis[Math.floor(Math.random()*emojis.length)];
+    span.style.left = Math.random()*100 + "%";
+    span.style.fontSize = (18 + Math.random()*10) + "px";
+    span.style.animationDelay = (Math.random()*0.7) + "s";
+    container.appendChild(span);
+  }
+  cardEl.appendChild(container);
+  setTimeout(()=>{
+    if (container.parentNode) container.parentNode.removeChild(container);
+  }, 2600);
+}
+
+function maybeFinishTest(){
+  if (!testFinished && allAnswered()){
+    testFinished = true;
+    showResult();
+  }
+}
+
+function handleAnswer(idx){
+  const q = questions[current];
+  if(q.answer !== null) return;
+
+  q.answer = idx;
+
+  const btns = optionsBox.querySelectorAll(".btn-option");
+  btns.forEach(b=>{
+    b.classList.add("disabled");
+    const i = parseInt(b.dataset.index,10);
+    if(i === q.correct) b.classList.add("correct");
+    if(i === idx && idx !== q.correct) b.classList.add("wrong");
+  });
+
+  if(idx === q.correct){
+    correctCount++;
+    failStreak = 0;
+    statCorrectEl.textContent = correctCount;
+    feedbackEl.textContent = "✅ ¡Correcto!";
+    feedbackEl.className = "ok";
+    pulseCard(true);
+    triggerConfetti();
+  }else{
+    wrongCount++;
+    failStreak++;
+    statWrongEl.textContent = wrongCount;
+    let msg = "❌ Incorrecto.";
+    if(failStreak >= 3 && correctCount > 0){
+      correctCount--;
+      penaltyCount++;
+      failStreak = 0;
+      statCorrectEl.textContent = correctCount;
+      statPenaltyEl.textContent = penaltyCount;
+      msg += " Has acumulado 3 fallos: se resta 1 acierto.";
+    }else{
+      const remain = 3 - failStreak;
+      msg += " Cuando acumules " + remain + " fallo(s) más se restará 1 acierto.";
+    }
+    feedbackEl.textContent = msg;
+    feedbackEl.className = "bad";
+    pulseCard(false);
+    triggerExplosion();
+  }
+
+  maybeFinishTest();
+}
+
+function pulseCard(ok){
+  const cls = ok ? "flash-correct" : "flash-wrong shake";
+  cardEl.classList.add(...cls.split(" "));
+  setTimeout(()=> {
+    cardEl.classList.remove("flash-correct","flash-wrong","shake");
+  }, 500);
+}
+
+prevBtn.addEventListener("click", ()=>{
+  if(current>0){
+    current--;
+    renderQuestion();
+  }
+});
+nextBtn.addEventListener("click", ()=>{
+  if(current<questions.length-1){
+    current++;
+    renderQuestion();
+  }
+});
+
+// Resultado final (se muestra automáticamente al completar todas las preguntas)
+function showResult(){
+  const total = questions.length;
+  const answered = questions.filter(q=>q.answer!==null).length;
+  const score = correctCount - penaltyCount;
+  const pct = total>0 ? Math.round((score/total)*100) : 0;
+
+  let txt = "";
+  txt += "<strong>Resultado final:</strong><br>";
+  txt += "Preguntas respondidas: " + answered + " de " + total + "<br>";
+  txt += "Aciertos netos: " + correctCount + "<br>";
+  txt += "Fallos: " + wrongCount + "<br>";
+  txt += "Penalizaciones aplicadas (cada 3 fallos): " + penaltyCount + "<br>";
+  txt += "Puntuación (aciertos - penalizaciones): <strong>" + score + "</strong> (" + pct + "% aproximado).<br>";
+  txt += "Recuerda contrastar siempre con temario, jurisprudencia y normativa oficial.";
+
+  finalBox.innerHTML = txt;
+}
+
+// Reiniciar test solo con las preguntas falladas
+function restartWithWrong(){
+  if(!allAnswered()){
+    finalBox.innerHTML = "<strong>Para repetir solo los errores, primero contesta todas las preguntas.</strong>";
+    window.scrollTo({top:0,behavior:"smooth"});
+    return;
+  }
+
+  const wrongQs = questions.filter(q => q.answer !== null && q.answer !== q.correct);
+
+  if(wrongQs.length === 0){
+    finalBox.innerHTML = "<strong>No tienes preguntas falladas para repetir.</strong>";
+    window.scrollTo({top:0,behavior:"smooth"});
+    return;
+  }
+
+  const base = wrongQs.map(q => ({
+    q: q.q,
+    options: q.options.slice(),
+    correct: q.correct,
+    lock: q.lock
+  }));
+
+  questions = buildQuestionsFrom(base);
+  current = 0;
+  correctCount = 0;
+  wrongCount = 0;
+  penaltyCount = 0;
+  failStreak = 0;
+  testFinished = false;
+  statCorrectEl.textContent = "0";
+  statWrongEl.textContent = "0";
+  statPenaltyEl.textContent = "0";
+  finalBox.innerHTML = "<strong>Nuevo test iniciado solo con las preguntas que fallaste.</strong>";
+  renderQuestion();
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+
+function restartAll(){
+  questions = buildQuestionsFrom(RAW);
+  current = 0;
+  correctCount = 0;
+  wrongCount = 0;
+  penaltyCount = 0;
+  failStreak = 0;
+  testFinished = false;
+  statCorrectEl.textContent = "0";
+  statWrongEl.textContent = "0";
+  statPenaltyEl.textContent = "0";
+  finalBox.innerHTML = "<strong>Nuevo test iniciado con todas las preguntas barajadas.</strong>";
+  renderQuestion();
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+
+retryWrongBtn.addEventListener("click", restartWithWrong);
+shuffleBtn.addEventListener("click", restartAll);
+
+// Inicio
+document.getElementById("startBtn").addEventListener("click", ()=>{
+  document.getElementById("startOverlay").style.display = "none";
+  renderQuestion();
+});
+</script>
+</body>
+</html>
