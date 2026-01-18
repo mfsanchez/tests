@@ -4,9 +4,16 @@
   <meta charset="utf-8">
   <title>Grado en Seguridad Pública y Privada</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#2563eb">
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-J43F4M6Z1E"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-J43F4M6Z1E');
+  </script>
 
   <style>
     :root{
@@ -281,10 +288,6 @@
       <div class="num" id="totalQuestions">–</div>
       <div class="label">Preguntas</div>
     </div>
-    <div class="stat">
-      <div class="num" id="visitCount">–</div>
-      <div class="label">Visitas</div>
-    </div>
   </div>
 </section>
 <!-- PORTADA MÓVIL MODERNA -->
@@ -334,7 +337,6 @@
 <footer>
   Proyecto de uso académico · UMH
   <div>📅 Última actualización: <span id="lastUpdate">–</span></div>
-  <div>👁️ Visitas al índice: <span id="visitCountFooter">–</span></div>
   <div><em>Hecho por mfsanchez</em></div>
 </footer>
 
@@ -360,33 +362,5 @@ if ("serviceWorker" in navigator && location.hostname !== "localhost") {
   });
 }
 </script>
-<script>
-  // ==========================
-  // CONTADOR DE VISITAS (CountAPI)
-  // ==========================
-
-  const VISIT_URL =
-    "https://api.countapi.xyz/hit/mfsanchez.github.io/tests-index";
-
-  fetch(VISIT_URL)
-    .then(res => res.json())
-    .then(data => {
-      const visits = data.value ?? "–";
-      document.getElementById("visitCount").textContent = visits;
-      document.getElementById("visitCountFooter").textContent = visits;
-    })
-    .catch(err => {
-      console.error("Error contador visitas", err);
-      document.getElementById("visitCount").textContent = "–";
-      document.getElementById("visitCountFooter").textContent = "–";
-    });
-</script>
-
-
-
-
-
 </body>
 </html>
-
-
