@@ -1,22 +1,19 @@
 <!doctype html>
 <html lang="es">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>SEGURIDAD PRIVADA</title>
-  <!-- CSS del test -->
-  <link rel="stylesheet" href="./style.css">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>METODOLOGIA DE LA INVESTIGACION</title>
+<link rel="stylesheet" href="../core/style.css">
 </head>
 <body>
-
 <header class="top-bar">
   <a href="../" class="back-btn">⬅ Volver al menú</a>
   <img src="../assets/umh.png" alt="Universitas Miguel Hernández" class="logo-umh">
 </header>
-
 <div id="startOverlay">
   <div class="start-box">
-    <div class="start-warning">⚠️ ATENCIÓN: SEGURIDAD PRIVADA 100% PREGUNTAS</div>
+    <div class="start-warning">⚠️ ATENCIÓN:METODOLOGIA DE LA INVESTIGACION 100% PREGUNTAS</div>
     <div class="start-text">
       Úsalo para practicar, pero contrasta siempre con temario, normativa y criterio del profesorado.
     </div>
@@ -25,34 +22,17 @@
 </div>
 
 <div class="wrap">
-  <h1>SEGURIDAD PRIVADA</h1>
-
-  <div id="examBadge" class="exam-badge" style="display:none;">
-    📝 MODO EXAMEN · ENERO 2026
-  </div>
-
+  <h1>METODOLOGIA DE LA INVESTIGACION</h1>
   <div class="meta">
     Test interactivo · Aciertos/Fallos · Penalización: cada 3 fallos se resta 1 acierto · Preguntas barajadas.
   </div>
 
   <div class="card" id="card">
     <div class="stats">
-      <div class="stat ok">
-        <span class="label">Aciertos</span>
-        <span class="value" id="statCorrect">0</span>
-      </div>
-      <div class="stat bad">
-        <span class="label">Fallos</span>
-        <span class="value" id="statWrong">0</span>
-      </div>
-      <div class="stat pen">
-        <span class="label">Penalizaciones</span>
-        <span class="value" id="statPenalty">0</span>
-      </div>
-      <div class="stat">
-        <span class="label">Pregunta</span>
-        <span class="value" id="statIndex">1 / 50</span>
-      </div>
+      <div class="stat ok"><span class="label">Aciertos</span><span class="value" id="statCorrect">0</span></div>
+      <div class="stat bad"><span class="label">Fallos</span><span class="value" id="statWrong">0</span></div>
+      <div class="stat pen"><span class="label">Penalizaciones</span><span class="value" id="statPenalty">0</span></div>
+      <div class="stat"><span class="label">Pregunta</span><span class="value" id="statIndex">1 / 50</span></div>
     </div>
 
     <div id="questionBox">
@@ -68,14 +48,12 @@
         <button class="nav" id="nextBtn">Siguiente ⟶</button>
         <button class="nav" id="retryWrongBtn">Repetir errores</button>
         <button class="nav" id="shuffleBtn">Barajar preguntas</button>
-        <button class="nav" id="exam2026Btn">📄 Examen Enero 2026</button>
       </div>
     </div>
 
     <div id="finalBox"></div>
   </div>
 </div>
-
 <!-- 1️⃣ DATOS (define RAW) -->
 <script src="./data.js"></script>
 
@@ -91,11 +69,9 @@
     document.getElementById("startOverlay").style.display = "none";
 
     initTest({
-      questions: RAW,
-      examQuestions: RAW_EXAMEN_2026
+      questions: RAW
     });
   });
 </script>
 </body>
 </html>
-

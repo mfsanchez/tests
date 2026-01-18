@@ -5,109 +5,363 @@
   <title>Grado en Seguridad Pública y Privada</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#2563eb">
+
   <style>
-    body {
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-      background: #f1f5f9;
-      padding: 20px;
-      color: #0f172a;
+    :root{
+      --accent:#1e3a8a;
+      --bg1:#e0f2fe;
+      --bg2:#f8fafc;
+      --bg3:#e2e8f0;
+      --text:#0f172a;
+      --muted:#475569;
     }
 
-    h1 {
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(180deg,var(--bg1),var(--bg2),var(--bg3));
+      color: var(--text);
+    }
+
+    /* ===== HERO ===== */
+    .hero {
+      padding: 40px 20px 44px;
       text-align: center;
-      margin-bottom: 6px;
+    }
+
+    .logo-umh {
+      height: 54px;
+      margin-bottom: 14px;
+    }
+
+    .title {
+      font-size: 28px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin: 6px 0;
     }
 
     .subtitle {
-      text-align: center;
-      color: #475569;
-      margin-bottom: 28px;
+      color: var(--muted);
       font-size: 14px;
     }
 
+    /* ===== STATS ===== */
+    .stats {
+      display: flex;
+      justify-content: center;
+      gap: 18px;
+      margin-top: 30px;
+      flex-wrap: wrap;
+    }
+
+    .stat {
+      background: #fff;
+      border-radius: 16px;
+      padding: 14px 20px;
+      min-width: 150px;
+      box-shadow: 0 8px 20px rgba(15,23,42,.08);
+    }
+
+    .stat .num {
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--accent);
+    }
+
+    .stat .label {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    /* ===== COURSES ===== */
     .course {
-      max-width: 520px;
-      margin: 0 auto 24px auto;
+      max-width: 720px;
+      margin: 34px auto;
+      background: #fff;
+      border-radius: 20px;
+      padding: 22px;
+      box-shadow:
+        0 10px 30px rgba(15,23,42,.08),
+        0 1px 2px rgba(15,23,42,.06);
     }
 
     .course h2 {
-      font-size: 16px;
-      margin-bottom: 10px;
-      color: #1e293b;
-      border-left: 4px solid #2563eb;
-      padding-left: 8px;
+      font-size: 15px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      color: var(--accent);
+      border-left: 4px solid var(--accent);
+      padding-left: 12px;
+      margin-bottom: 16px;
     }
 
     .menu {
       display: grid;
-      gap: 10px;
+      gap: 14px;
     }
 
     a.subject {
-      display: block;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 20px;
+      border-radius: 16px;
       text-decoration: none;
-      padding: 14px;
-      border-radius: 12px;
-      background: white;
-      color: #0f172a;
+      background: #f9fafb;
+      color: var(--text);
       font-weight: 600;
-      text-align: center;
-      box-shadow: 0 6px 16px rgba(0,0,0,.1);
-      transition: background .15s ease, transform .15s ease;
+      box-shadow: 0 4px 12px rgba(0,0,0,.06);
+      transition: all .15s ease;
     }
 
     a.subject:hover {
-      background: #e0f2fe;
-      transform: translateY(-1px);
+      background: #eef2ff;
+      transform: translateY(-2px);
+      box-shadow: 0 10px 24px rgba(15,23,42,.12);
     }
+
+    .badge {
+      background: var(--accent);
+      color: #fff;
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    /* ===== FOOTER ===== */
+    footer {
+      margin-top: 60px;
+      border-top: 1px solid #e5e7eb;
+      background: #f8fafc;
+      text-align: center;
+      padding: 26px 16px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    footer div {
+      margin-top: 6px;
+    }
+
+    @media (max-width: 600px) {
+      .logo-umh { height: 46px; }
+      .title { font-size: 24px; }
+      .stat { min-width: 120px; }
+      a.subject { padding: 14px; font-size: 14px; }
+      .badge { font-size: 11px; padding: 5px 12px; }
+    }
+/* ===== PORTADA MÓVIL MODERNA ===== */
+.mobile-cover {
+  display: none;
+}
+
+@media (max-width: 640px) {
+  .mobile-cover {
+    display: block;
+    padding: 0 16px 22px;
+    margin-top: -12px;
+  }
+
+  
+  .mobile-glass-badge {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: linear-gradient(135deg, #1e3a8a, #2563eb);
+    color: #fff;
+    margin-bottom: 10px;
+  }
+
+  .mobile-glass-title {
+    font-size: 18px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: #020617;
+    margin-bottom: 8px;
+  }
+
+  .mobile-glass-text {
+    font-size: 13.5px;
+    line-height: 1.45;
+    color: #475569;
+  }
+}
+@media (max-width: 640px) {
+  .stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+  }
+
+  .stats .stat:last-child {
+    grid-column: span 2;
+  }
+}
+.campus-hero {
+  max-width: 680px;
+  margin: 0 auto 28px;
+  padding: 20px;
+  border-radius: 18px;
+  background:
+    linear-gradient(135deg, rgba(37,99,235,.12), rgba(37,99,235,.05)),
+    white;
+  box-shadow:
+    0 18px 40px rgba(15,23,42,.12),
+    inset 0 1px 0 rgba(255,255,255,.8);
+}
+
+.campus-badge {
+  display: inline-block;
+  background: linear-gradient(135deg,#1e3a8a,#2563eb);
+  color: white;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .04em;
+  padding: 4px 10px;
+  border-radius: 999px;
+  margin-bottom: 10px;
+}
+
+.campus-hero h2 {
+  font-size: 18px;
+  font-weight: 800;
+  margin: 6px 0;
+}
+
+.campus-hero p {
+  font-size: 14px;
+  color: #475569;
+  margin: 0;
+}
+.course-1 h2 {
+  border-left-color: #2563eb; /* azul */
+}
+
+.course-2 h2 {
+  border-left-color: #16a34a; /* verde */
+}
+
+.course-3 h2 {
+  border-left-color: #ea580c; /* naranja */
+}
+.course-1 { background: linear-gradient(180deg,#ffffff,#f8fafc); }
+.course-2 { background: linear-gradient(180deg,#ffffff,#f0fdf4); }
+.course-3 { background: linear-gradient(180deg,#ffffff,#fff7ed); }
+
+
   </style>
 </head>
 
 <body>
 
-  <h1>🎓 Grado en Seguridad Pública y Privada</h1>
+<!-- HERO -->
+<section class="hero">
+  <img src="assets/umh.png" class="logo-umh" alt="Universitat Miguel Hernández">
+  <h1 class="title">Grado en Seguridad Pública y Privada</h1>
   <div class="subtitle">
-    Tests interactivos de preparación por curso y asignatura
+    Plataforma de tests interactivos · Preparación académica
   </div>
 
-  <!-- PRIMER CURSO -->
-  <div class="course">
-    <h2>📘 Primer Curso</h2>
-    <div class="menu">
-      <a href="gestion-organizaciones/" class="subject">
-        Gestión de Organizaciones
-      </a>
+  <div class="stats">
+    <div class="stat">
+      <div class="num" id="totalSubjects">–</div>
+      <div class="label">Asignaturas</div>
+    </div>
+    <div class="stat">
+      <div class="num" id="totalQuestions">–</div>
+      <div class="label">Preguntas</div>
+    </div>
+    <div class="stat">
+      <div class="num" id="visitCount">–</div>
+      <div class="label">Visitas</div>
     </div>
   </div>
+</section>
+<!-- PORTADA MÓVIL MODERNA -->
+<div class="campus-hero">
+  <span class="campus-badge">Campus virtual</span>
+  <h2>Tests interactivos del grado</h2>
+  <p>
+    Practica por asignaturas con preguntas reales, penalización automática
+    y resultados inmediatos.
+  </p>
+</div>
 
-  <!-- SEGUNDO CURSO -->
-  <div class="course">
-    <h2>📗 Segundo Curso</h2>
-    <div class="menu">
-      <a href="seguridad-privada/" class="subject">
-        Seguridad Privada
-      </a>
-    </div>
-  </div>
 
-  <!-- TERCER CURSO -->
-  <div class="course">
-    <h2>📙 Tercer Curso</h2>
-    <div class="menu">
-      <a href="proteccion-civil/" class="subject">
-        Protección Civil y Emergencias
-      </a>
-    </div>
-  </div>
 
-  <!-- CUARTO CURSO -->
-  <div class="course">
-    <h2>📕 Cuarto Curso</h2>
-    <div class="menu">
-      <!-- Asignaturas pendientes de añadir -->
-    </div>
+<!-- CURSOS -->
+<div class="course course-1">
+  <h2>Primer Curso</h2>
+  <div class="menu">
+    <a href="gestion-organizaciones/" class="subject" data-questions="121">
+      Gestión de Organizaciones <span class="badge">121</span>
+    </a>
   </div>
+</div>
+
+<div class="course course-2">
+  <h2>Segundo Curso</h2>
+  <div class="menu">
+    <a href="seguridad-privada/" class="subject" data-questions="215">
+      Seguridad Privada <span class="badge">215</span>
+    </a>
+    <a href="metodologia-investigacion/" class="subject" data-questions="49">
+      Metodología de la Investigación <span class="badge">49</span>
+    </a>
+  </div>
+</div>
+
+<div class="course course-3">
+  <h2>Tercer Curso</h2>
+  <div class="menu">
+    <a href="proteccion-civil/" class="subject" data-questions="296">
+      Protección Civil y Emergencias <span class="badge">296</span>
+    </a>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  Proyecto de uso académico · UMH
+  <div>📅 Última actualización: <span id="lastUpdate">–</span></div>
+  <div>👁️ Visitas al índice: <span id="visitCountFooter">–</span></div>
+  <div><em>Hecho por mfsanchez</em></div>
+</footer>
+
+<script>
+  const subjects = document.querySelectorAll(".subject");
+
+  document.getElementById("totalSubjects").textContent = subjects.length;
+
+  let totalQuestions = 0;
+  subjects.forEach(s => {
+    totalQuestions += Number(s.dataset.questions || 0);
+  });
+  document.getElementById("totalQuestions").textContent = totalQuestions;
+
+  document.getElementById("lastUpdate").textContent =
+    new Date().toLocaleDateString("es-ES");
+</script>
+
+<script>
+if ("serviceWorker" in navigator && location.hostname !== "localhost") {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("/service-worker.js").catch(() => {});
+  });
+}
+</script>
 
 </body>
 </html>
+
 
