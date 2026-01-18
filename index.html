@@ -371,15 +371,17 @@ if ("serviceWorker" in navigator && location.hostname !== "localhost") {
   fetch(COUNT_URL)
     .then(res => res.json())
     .then(data => {
-      const v = data.value ?? "–";
-      document.getElementById("visitCount").textContent = v;
-      document.getElementById("visitCountFooter").textContent = v;
+      const value = data.value ?? "–";
+      document.getElementById("visitCount").textContent = value;
+      document.getElementById("visitCountFooter").textContent = value;
     })
-    .catch(() => {
+    .catch(err => {
+      console.error("Error contador visitas", err);
       document.getElementById("visitCount").textContent = "–";
       document.getElementById("visitCountFooter").textContent = "–";
     });
 </script>
+
 
 
 </body>
