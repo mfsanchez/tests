@@ -362,18 +362,18 @@ if ("serviceWorker" in navigator && location.hostname !== "localhost") {
 </script>
 <script>
   // ==========================
-  // CONTADOR DE VISITAS
+  // CONTADOR DE VISITAS (CountAPI)
   // ==========================
 
-  const COUNT_URL =
+  const VISIT_URL =
     "https://api.countapi.xyz/hit/mfsanchez.github.io/tests-index";
 
-  fetch(COUNT_URL)
+  fetch(VISIT_URL)
     .then(res => res.json())
     .then(data => {
-      const value = data.value ?? "–";
-      document.getElementById("visitCount").textContent = value;
-      document.getElementById("visitCountFooter").textContent = value;
+      const visits = data.value ?? "–";
+      document.getElementById("visitCount").textContent = visits;
+      document.getElementById("visitCountFooter").textContent = visits;
     })
     .catch(err => {
       console.error("Error contador visitas", err);
@@ -381,6 +381,8 @@ if ("serviceWorker" in navigator && location.hostname !== "localhost") {
       document.getElementById("visitCountFooter").textContent = "–";
     });
 </script>
+
+
 
 
 
