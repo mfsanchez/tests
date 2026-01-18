@@ -360,6 +360,27 @@ if ("serviceWorker" in navigator && location.hostname !== "localhost") {
   });
 }
 </script>
+<script>
+  // ==========================
+  // CONTADOR DE VISITAS
+  // ==========================
+
+  const COUNT_URL =
+    "https://api.countapi.xyz/hit/mfsanchez.github.io/tests-index";
+
+  fetch(COUNT_URL)
+    .then(res => res.json())
+    .then(data => {
+      const v = data.value ?? "–";
+      document.getElementById("visitCount").textContent = v;
+      document.getElementById("visitCountFooter").textContent = v;
+    })
+    .catch(() => {
+      document.getElementById("visitCount").textContent = "–";
+      document.getElementById("visitCountFooter").textContent = "–";
+    });
+</script>
+
 
 </body>
 </html>
